@@ -45,6 +45,7 @@
       --tinta: #111111;
       --gris: #8a8a86;
       --filete: rgba(17, 17, 17, 0.14);
+      --filete-fuerte: rgba(17, 17, 17, 0.28);
       --tinta-texto: #f2f2f0;
       --tinta-gris: #9a9a95;
 
@@ -84,20 +85,19 @@
       justify-content: space-between;
       align-items: center;
       gap: 24px;
-      padding: clamp(20px, 2.6vw, 32px) var(--margen);
+      padding: clamp(18px, 2vw, 26px) var(--margen);
     }
 
     .logo {
       display: block;
-      width: clamp(132px, 14vw, 208px);
+      width: clamp(200px, 26vw, 400px);
       height: auto;
     }
 
-    /* La lámina: el dibujo, con aire por los cuatro costados. */
     .lamina {
       position: relative;
       flex: 1 1 auto;
-      min-height: 240px;
+      min-height: 220px;
     }
 
     /* En absoluto para que el canvas no arrastre la altura de la página.
@@ -114,7 +114,7 @@
     }
 
     .mensaje {
-      padding: clamp(22px, 2.8vw, 34px) var(--margen) clamp(24px, 3.2vw, 40px);
+      padding: clamp(22px, 2.8vw, 34px) var(--margen) clamp(28px, 3.6vw, 46px);
       border-top: 1px solid var(--filete);
       margin-top: clamp(14px, 1.8vw, 24px);
     }
@@ -137,52 +137,142 @@
       color: var(--gris);
     }
 
-    /* Banda de contacto: tinta plena, a sangre. */
-    .contacto {
+    /* ---- Contacto: botón fijo abajo a la derecha y su panel ---- */
+
+    .contacto-boton {
+      position: fixed;
+      right: clamp(18px, 3vw, 40px);
+      bottom: clamp(18px, 3vw, 40px);
+      z-index: 20;
+      border: 0;
       background: var(--tinta);
       color: var(--tinta-texto);
-      padding: clamp(22px, 2.8vw, 34px) var(--margen);
+      font-family: var(--sans);
+      font-size: 11px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      padding: 16px 26px;
+      cursor: pointer;
+      transition: opacity 180ms ease;
+    }
+
+    .contacto-boton:hover { opacity: 0.82; }
+    .contacto-boton:focus-visible { outline: 2px solid var(--tinta); outline-offset: 4px; }
+
+    .panel {
+      position: fixed;
+      right: clamp(18px, 3vw, 40px);
+      bottom: calc(clamp(18px, 3vw, 40px) + 62px);
+      z-index: 21;
+      width: min(380px, calc(100vw - 36px));
+      max-height: calc(100svh - 140px);
+      overflow-y: auto;
+      background: var(--papel);
+      border: 1px solid var(--filete-fuerte);
+      padding: clamp(22px, 2.4vw, 30px);
+      box-shadow: 0 18px 48px rgba(17, 17, 17, 0.1);
+    }
+
+    .panel[hidden] { display: none; }
+
+    .panel-cabecera {
       display: flex;
       justify-content: space-between;
-      align-items: flex-end;
-      gap: clamp(16px, 3vw, 48px);
-      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 16px;
+      margin-bottom: 20px;
     }
 
-    /* El correo cae sobre el mismo margen que el titular. */
-    .contacto .bloque {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: clamp(10px, 1.2vw, 16px);
-    }
-
-    .contacto .eyebrow { color: var(--tinta-gris); }
-
-    .contacto .correo {
-      font-family: var(--serif);
-      font-size: clamp(1.5rem, 3.4vw, 2.6rem);
-      color: var(--tinta-texto);
-      text-decoration: none;
-      border-bottom: 1px solid rgba(242, 242, 240, 0.35);
-      padding-bottom: 0.08em;
-      transition: border-color 180ms ease;
-    }
-
-    .contacto .correo:hover { border-bottom-color: var(--tinta-texto); }
-
-    .contacto .correo:focus-visible {
-      outline: 2px solid var(--tinta-texto);
-      outline-offset: 8px;
-      border-bottom-color: transparent;
-    }
-
-    .contacto .lugar {
+    .panel h2 {
       margin: 0;
-      font-size: 11px;
-      letter-spacing: 0.14em;
+      font-family: var(--serif);
+      font-size: 1.6rem;
+      font-weight: 400;
+      letter-spacing: -0.01em;
+    }
+
+    .panel h2[hidden] { display: none; }
+
+    .cerrar {
+      margin-left: auto;
+      border: 0;
+      background: none;
+      color: var(--gris);
+      font-family: var(--sans);
+      font-size: 20px;
+      line-height: 1;
+      padding: 4px;
+      cursor: pointer;
+    }
+
+    .cerrar:hover { color: var(--tinta); }
+    .cerrar:focus-visible { outline: 2px solid var(--tinta); outline-offset: 2px; }
+
+    .formulario { display: flex; flex-direction: column; gap: 18px; }
+    .formulario[hidden] { display: none; }
+
+    .campo { display: flex; flex-direction: column; gap: 7px; }
+
+    .campo span {
+      font-size: 10px;
+      letter-spacing: 0.24em;
       text-transform: uppercase;
-      color: var(--tinta-gris);
+      color: var(--gris);
+    }
+
+    .campo input,
+    .campo textarea {
+      font-family: var(--sans);
+      font-size: 15px;
+      color: var(--tinta);
+      background: none;
+      border: 0;
+      border-bottom: 1px solid var(--filete-fuerte);
+      padding: 6px 0;
+      transition: border-color 160ms ease;
+    }
+
+    .campo textarea { resize: vertical; min-height: 76px; }
+
+    .campo input:focus,
+    .campo textarea:focus {
+      outline: none;
+      border-bottom-color: var(--tinta);
+    }
+
+    .enviar {
+      align-self: flex-start;
+      margin-top: 4px;
+      border: 0;
+      background: var(--tinta);
+      color: var(--tinta-texto);
+      font-family: var(--sans);
+      font-size: 11px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      padding: 14px 26px;
+      cursor: pointer;
+      transition: opacity 180ms ease;
+    }
+
+    .enviar:hover { opacity: 0.82; }
+    .enviar:focus-visible { outline: 2px solid var(--tinta); outline-offset: 4px; }
+
+    .recibido[hidden] { display: none; }
+
+    .recibido .titulo {
+      margin: 0;
+      font-family: var(--serif);
+      font-size: 1.5rem;
+      line-height: 1.2;
+    }
+
+    .recibido .texto {
+      margin: 0.7em 0 0;
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 1rem;
+      color: var(--gris);
     }
 
     /* Entrada serena; el dibujo ya se traza solo. */
@@ -194,14 +284,19 @@
       .pagina > .cabecera { animation-delay: 120ms; }
       .pagina > .lamina   { animation-delay: 260ms; }
       .pagina > .mensaje  { animation-delay: 420ms; }
-      .pagina > .contacto { animation-delay: 560ms; }
       @keyframes aparecer { to { opacity: 1; } }
+
+      .panel { animation: subir 260ms cubic-bezier(0.22, 1, 0.36, 1); }
+      @keyframes subir {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: none; }
+      }
     }
 
     @media (max-width: 620px) {
-      .cabecera { flex-direction: column; align-items: flex-start; gap: 18px; }
-      .logo { width: min(58vw, 210px); align-self: flex-end; }
-      .contacto { flex-direction: column; align-items: flex-start; gap: 14px; }
+      .cabecera { flex-direction: column; align-items: flex-start; gap: 16px; }
+      .logo { width: min(74vw, 300px); align-self: flex-end; }
+      .panel { left: 18px; right: 18px; width: auto; }
     }
   </style>
 </head>
@@ -220,20 +315,91 @@
       <h1>Web en construcción</h1>
       <p class="sigue">Mientras tanto, la obra sigue.</p>
     </section>
+  </div>
 
-    <footer class="contacto">
-      <div class="bloque">
-        <p class="eyebrow">Contacto</p>
-        <!-- Cambia hola@estudiomalo.com por el correo real del estudio -->
-        <a class="correo" href="mailto:hola@estudiomalo.com">hola@estudiomalo.com</a>
-      </div>
-      <p class="lugar">© 2026 MALO Architects</p>
-    </footer>
+  <button class="contacto-boton" id="abrir" aria-expanded="false" aria-controls="panel">Contacto</button>
+
+  <div class="panel" id="panel" role="dialog" aria-labelledby="panel-titulo" hidden>
+    <div class="panel-cabecera">
+      <h2 id="panel-titulo">Contacto</h2>
+      <button class="cerrar" id="cerrar" aria-label="Cerrar">&times;</button>
+    </div>
+
+    <!-- OJO: el formulario todavía no entrega el mensaje a ningún sitio; solo
+         muestra la confirmación. Para que llegue de verdad hay que apuntarlo
+         a un servicio de formularios (Formspree, Basin…) o a un backend. -->
+    <form class="formulario" id="formulario" novalidate>
+      <label class="campo">
+        <span>Nombre</span>
+        <input type="text" name="nombre" autocomplete="name" required>
+      </label>
+      <label class="campo">
+        <span>Correo</span>
+        <input type="email" name="correo" autocomplete="email" required>
+      </label>
+      <label class="campo">
+        <span>Mensaje</span>
+        <textarea name="mensaje" rows="4" required></textarea>
+      </label>
+      <button class="enviar" type="submit">Enviar</button>
+    </form>
+
+    <div class="recibido" id="recibido" tabindex="-1" role="status" hidden>
+      <p class="titulo">Contacto recibido</p>
+      <p class="texto">Gracias. Te respondemos en breve.</p>
+    </div>
   </div>
 
   <script src="dist/architectural-site.js"></script>
   <script>
     ArchitecturalSite.mount(document.getElementById("fondo"), { intensity: 0.85 });
+
+    (function () {
+      const boton = document.getElementById("abrir");
+      const panel = document.getElementById("panel");
+      const cerrar = document.getElementById("cerrar");
+      const formulario = document.getElementById("formulario");
+      const recibido = document.getElementById("recibido");
+      const titulo = document.getElementById("panel-titulo");
+
+      function abrir() {
+        panel.hidden = false;
+        boton.setAttribute("aria-expanded", "true");
+        const primero = formulario.querySelector("input");
+        if (primero && !formulario.hidden) primero.focus();
+      }
+
+      function ocultar() {
+        panel.hidden = true;
+        boton.setAttribute("aria-expanded", "false");
+        // El siguiente que abra encuentra el formulario en blanco.
+        formulario.hidden = false;
+        recibido.hidden = true;
+        titulo.hidden = false;
+        formulario.reset();
+      }
+
+      boton.addEventListener("click", () => (panel.hidden ? abrir() : ocultar()));
+      cerrar.addEventListener("click", () => { ocultar(); boton.focus(); });
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && !panel.hidden) { ocultar(); boton.focus(); }
+      });
+
+      document.addEventListener("pointerdown", (e) => {
+        if (panel.hidden) return;
+        if (!panel.contains(e.target) && !boton.contains(e.target)) ocultar();
+      });
+
+      formulario.addEventListener("submit", (e) => {
+        e.preventDefault();
+        if (!formulario.reportValidity()) return;
+        formulario.hidden = true;
+        titulo.hidden = true;
+        recibido.hidden = false;
+        recibido.focus();
+      });
+    })();
   </script>
 </body>
 </html>
