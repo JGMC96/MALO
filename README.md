@@ -1,3 +1,19 @@
+# MALO Architects
+
+Web del estudio. Ahora mismo es una sola página en construcción —
+`index.html` — con el logo, el contacto y, de fondo, la animación que se
+describe más abajo. La marca vive en `assets/` (logo, iconos, imagen para
+compartir y la Bodoni Moda autoalojada).
+
+## Publicar
+
+`.github/workflows/pages.yml` despliega la web en GitHub Pages con cada push
+a la rama por defecto. **Hay que activar Pages una vez** en el repositorio:
+Settings → Pages → Build and deployment → Source: **GitHub Actions**. A
+partir de ahí queda en `https://jgmc96.github.io/MALO/`.
+
+---
+
 # Dibujar la obra
 
 Animación monocroma de una obra que se dibuja y se construye a la vez, en

@@ -25,9 +25,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Requiere activar Pages una vez en el repo:
+      # Settings → Pages → Build and deployment → Source: GitHub Actions.
       - uses: actions/configure-pages@v5
-        with:
-          enablement: true
 
       # Solo lo que sirve la web: la portada, la marca y la animación compilada.
       - name: Reunir el sitio
