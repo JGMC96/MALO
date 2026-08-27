@@ -3,13 +3,19 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>MALO Architects — Estudio de arquitectura</title>
+  <title>MALO Architects — Web en construcción</title>
   <meta name="description" content="MALO Architects, estudio de arquitectura. Web en construcción.">
+  <meta name="theme-color" content="#ffffff">
 
   <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16.png">
   <link rel="icon" type="image/png" sizes="192x192" href="assets/favicon-192.png">
   <link rel="apple-touch-icon" href="assets/apple-touch-icon-180.png">
+
+  <!-- La redonda entra en el titular, que es lo primero que se lee: se pide
+       cuanto antes para que no haya salto de Times a Bodoni. La cursiva, que
+       solo sirve a una línea, se deja a la carga normal. -->
+  <link rel="preload" href="assets/fonts/bodoni-moda-latin.woff2" as="font" type="font/woff2" crossorigin>
 
   <meta property="og:title" content="MALO Architects">
   <meta property="og:description" content="Estudio de arquitectura. Web en construcción.">
@@ -43,16 +49,47 @@
     :root {
       --papel: #ffffff;
       --tinta: #111111;
-      --gris: #8a8a86;
+      /* Gris de marca oscurecido hasta 4,6:1 sobre blanco (antes 3,47:1, por
+         debajo del mínimo AA). Conserva el matiz cálido del kit. */
+      --gris: #737370;
       --filete: rgba(17, 17, 17, 0.14);
       --filete-fuerte: rgba(17, 17, 17, 0.28);
       --tinta-texto: #f2f2f0;
-      --tinta-gris: #9a9a95;
 
       --serif: "Bodoni Moda", "Bodoni MT", Didot, "Times New Roman", serif;
       --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
 
-      --margen: clamp(24px, 4.5vw, 72px);
+      /* ---- Un solo ritmo ------------------------------------------------
+         Todo lo que crece con la pantalla —tipografía y espaciado— interpola
+         sobre --ritmo, que va de 0 a 24px entre 320 y 1440px de ancho. Antes
+         cada banda tenía su propia pendiente (4.5vw, 3.6vw, 2.8vw…) y las
+         proporciones entre ellas se desordenaban por el camino. */
+      --ritmo: clamp(0px, 2.143vw - 6.857px, 24px);
+
+      /* Escala tipográfica: cinco tamaños, no siete sueltos. */
+      --t-titular:  calc(32px + var(--ritmo) * 1);      /* 32 → 56 */
+      --t-frase:    calc(16px + var(--ritmo) * 0.2);    /* 16 → 20.8 */
+      --t-titulo:   calc(22px + var(--ritmo) * 0.15);   /* 22 → 25.6 */
+      --t-cuerpo:   16px;   /* 16 es también el mínimo que evita el zoom de iOS */
+      --t-etiqueta: 11px;
+
+      /* Interlineado y tracking, propios de cada tamaño. */
+      --i-titular: 1.04;
+      --i-cuerpo: 1.5;
+      --k-titular: -0.02em;
+      --k-titulo: -0.01em;
+      --k-etiqueta: 0.24em;
+
+      /* Ritmo de espaciado: una unidad y sus múltiplos. */
+      --e:    calc(8px + var(--ritmo) * 0.667);  /*  8 → 24 */
+      --e-05: calc(var(--e) * 0.5);              /*  4 → 12 */
+      --e-15: calc(var(--e) * 1.5);              /* 12 → 36 */
+      --e-2:  calc(var(--e) * 2);                /* 16 → 48 */
+      --e-3:  calc(var(--e) * 3);                /* 24 → 72 */
+
+      --margen: var(--e-3);
+      --esquina: var(--e-2);   /* separación del botón fijo a las dos esquinas */
+      --alto-boton: 44px;      /* mínimo táctil; lo comparten los tres botones */
     }
 
     html, body { height: 100%; }
@@ -62,6 +99,8 @@
       background: var(--papel);
       color: var(--tinta);
       font-family: var(--sans);
+      font-size: var(--t-cuerpo);
+      line-height: var(--i-cuerpo);
       -webkit-font-smoothing: antialiased;
     }
 
@@ -73,24 +112,34 @@
 
     /* Cabecera: solo el logo, arriba a la izquierda y sobre papel limpio. */
     .cabecera {
-      padding: clamp(18px, 2vw, 26px) var(--margen);
+      padding: var(--e-15) var(--margen);
     }
 
+    /* Una sola curva continua. Antes daba un salto del 33 % al cruzar los
+       620px —el logo encogía justo cuando la pantalla crecía—; ahora crece
+       siempre, y el min() lo mantiene dentro del margen en pantallas
+       estrechas. */
     .logo {
       display: block;
-      width: clamp(220px, 30vw, 460px);
+      width: min(80vw, clamp(240px, 18.3vw + 240px, 460px));
       height: auto;
     }
 
     .lamina {
       position: relative;
       flex: 1 1 auto;
-      min-height: 220px;
+      /* Reserva proporcional a la pantalla, no fija: en un móvil apaisado
+         220px empujaban el mensaje fuera de la vista. */
+      min-height: clamp(120px, 24svh, 260px);
     }
 
     /* En absoluto para que el canvas no arrastre la altura de la página.
        El ancho máximo recorta el papel sobrante en pantallas muy anchas:
-       el dibujo se escala con la altura de la banda, no con el ancho. */
+       el dibujo se escala con la altura de la banda, no con el ancho.
+       Sigue centrado a propósito: el motor dibuja la escena centrada dentro
+       del lienzo y la escala a la altura de la banda, así que mover esta caja
+       no lleva la tinta al eje del texto —solo desplaza el hueco de un lado
+       al otro—. Alinearla de verdad pide un punto de encuadre en mount(). */
     .dibujo {
       position: absolute;
       top: 0;
@@ -102,18 +151,18 @@
     }
 
     .mensaje {
-      padding: clamp(22px, 2.8vw, 34px) var(--margen) clamp(28px, 3.6vw, 46px);
+      padding: var(--e-15) var(--margen) var(--e-2);
       border-top: 1px solid var(--filete);
-      margin-top: clamp(14px, 1.8vw, 24px);
+      margin-top: var(--e);
     }
 
     .mensaje h1 {
       margin: 0;
       font-family: var(--serif);
-      font-size: clamp(2rem, 4.6vw, 3.5rem);
+      font-size: var(--t-titular);
       font-weight: 400;
-      letter-spacing: -0.015em;
-      line-height: 1.04;
+      letter-spacing: var(--k-titular);
+      line-height: var(--i-titular);
       text-wrap: balance;
     }
 
@@ -121,44 +170,69 @@
       margin: 0.55em 0 0;
       font-family: var(--serif);
       font-style: italic;
-      font-size: clamp(1rem, 1.7vw, 1.3rem);
+      font-size: var(--t-frase);
       color: var(--gris);
     }
 
     /* ---- Contacto: botón fijo abajo a la derecha y su panel ---- */
 
-    .contacto-boton {
-      position: fixed;
-      right: clamp(18px, 3vw, 40px);
-      bottom: clamp(18px, 3vw, 40px);
-      z-index: 20;
+    .contacto-boton,
+    .enviar {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: var(--alto-boton);
       border: 0;
       background: var(--tinta);
       color: var(--tinta-texto);
       font-family: var(--sans);
-      font-size: 11px;
-      letter-spacing: 0.28em;
+      font-size: var(--t-etiqueta);
+      letter-spacing: var(--k-etiqueta);
+      line-height: 1;
       text-transform: uppercase;
-      padding: 16px 26px;
+      padding: 0 26px;
       cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
       transition: opacity 180ms ease;
     }
 
-    .contacto-boton:hover { opacity: 0.82; }
-    .contacto-boton:focus-visible { outline: 2px solid var(--tinta); outline-offset: 4px; }
+    .contacto-boton {
+      position: fixed;
+      right: var(--esquina);
+      bottom: var(--esquina);
+      z-index: 20;
+    }
+
+    .enviar { align-self: flex-start; margin-top: 4px; }
+
+    .contacto-boton:hover,
+    .enviar:hover { opacity: 0.82; }
+
+    .contacto-boton:focus-visible,
+    .enviar:focus-visible { outline: 2px solid var(--tinta); outline-offset: 4px; }
+
+    /* El hover no existe en un móvil: sin esto, tocar un botón no devolvía
+       nada hasta que aparecía el panel. Se dispara al apoyar el dedo. */
+    .contacto-boton:active,
+    .enviar:active { opacity: 0.7; }
 
     .panel {
       position: fixed;
-      right: clamp(18px, 3vw, 40px);
-      bottom: calc(clamp(18px, 3vw, 40px) + 62px);
+      right: var(--esquina);
+      bottom: calc(var(--esquina) + var(--alto-boton) + var(--e));
       z-index: 21;
-      width: min(380px, calc(100vw - 36px));
-      max-height: calc(100svh - 140px);
+      width: min(380px, calc(100vw - var(--esquina) * 2));
+      max-height: calc(100svh - var(--esquina) * 2 - var(--alto-boton) - var(--e) * 2);
       overflow-y: auto;
       background: var(--papel);
       border: 1px solid var(--filete-fuerte);
-      padding: clamp(22px, 2.4vw, 30px);
+      /* El panel no crece con la pantalla —su ancho está topado—, así que
+         mantiene un paso fijo de la escala en vez de seguir el ritmo. */
+      padding: 24px;
       box-shadow: 0 18px 48px rgba(17, 17, 17, 0.1);
+      /* Nace del botón que lo abre, no de su propio centro. */
+      transform-origin: 100% 100%;
     }
 
     .panel[hidden] { display: none; }
@@ -166,44 +240,54 @@
     .panel-cabecera {
       display: flex;
       justify-content: space-between;
-      align-items: baseline;
+      align-items: center;
       gap: 16px;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
     }
 
     .panel h2 {
       margin: 0;
       font-family: var(--serif);
-      font-size: 1.6rem;
+      font-size: var(--t-titulo);
       font-weight: 400;
-      letter-spacing: -0.01em;
+      letter-spacing: var(--k-titulo);
+      line-height: var(--i-titular);
     }
 
     .panel h2[hidden] { display: none; }
 
+    /* 44×44 de diana real; los márgenes negativos la dejan ópticamente
+       donde estaba, pegada al borde del panel. */
     .cerrar {
-      margin-left: auto;
+      display: grid;
+      place-items: center;
+      width: 44px;
+      height: 44px;
+      margin: -10px -14px -10px auto;
       border: 0;
       background: none;
       color: var(--gris);
       font-family: var(--sans);
       font-size: 20px;
       line-height: 1;
-      padding: 4px;
       cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
     }
 
-    .cerrar:hover { color: var(--tinta); }
+    .cerrar:hover,
+    .cerrar:active { color: var(--tinta); }
     .cerrar:focus-visible { outline: 2px solid var(--tinta); outline-offset: 2px; }
 
-    .formulario { display: flex; flex-direction: column; gap: 18px; }
+    .formulario { display: flex; flex-direction: column; gap: 16px; }
     .formulario[hidden] { display: none; }
 
-    .campo { display: flex; flex-direction: column; gap: 7px; }
+    .campo { display: flex; flex-direction: column; gap: 8px; }
 
     .campo span {
-      font-size: 10px;
-      letter-spacing: 0.24em;
+      font-size: var(--t-etiqueta);
+      letter-spacing: var(--k-etiqueta);
+      line-height: 1;
       text-transform: uppercase;
       color: var(--gris);
     }
@@ -211,16 +295,19 @@
     .campo input,
     .campo textarea {
       font-family: var(--sans);
-      font-size: 15px;
+      /* 16px es el umbral por debajo del cual iOS hace zoom al enfocar. */
+      font-size: var(--t-cuerpo);
+      line-height: var(--i-cuerpo);
+      min-height: var(--alto-boton);
       color: var(--tinta);
       background: none;
       border: 0;
       border-bottom: 1px solid var(--filete-fuerte);
-      padding: 6px 0;
+      padding: 10px 0;
       transition: border-color 160ms ease;
     }
 
-    .campo textarea { resize: vertical; min-height: 76px; }
+    .campo textarea { resize: vertical; min-height: 96px; }
 
     .campo input:focus,
     .campo textarea:focus {
@@ -228,71 +315,88 @@
       border-bottom-color: var(--tinta);
     }
 
-    .enviar {
-      align-self: flex-start;
-      margin-top: 4px;
-      border: 0;
-      background: var(--tinta);
-      color: var(--tinta-texto);
-      font-family: var(--sans);
-      font-size: 11px;
-      letter-spacing: 0.28em;
-      text-transform: uppercase;
-      padding: 14px 26px;
-      cursor: pointer;
-      transition: opacity 180ms ease;
-    }
-
-    .enviar:hover { opacity: 0.82; }
-    .enviar:focus-visible { outline: 2px solid var(--tinta); outline-offset: 4px; }
-
     .recibido[hidden] { display: none; }
 
     .recibido .titulo {
       margin: 0;
       font-family: var(--serif);
-      font-size: 1.5rem;
-      line-height: 1.2;
+      font-size: var(--t-titulo);
+      letter-spacing: var(--k-titulo);
+      line-height: var(--i-titular);
     }
 
     .recibido .texto {
       margin: 0.7em 0 0;
       font-family: var(--serif);
       font-style: italic;
-      font-size: 1rem;
+      font-size: var(--t-cuerpo);
       color: var(--gris);
     }
 
-    /* Entrada serena; el dibujo ya se traza solo. */
+    /* Entrada serena; el dibujo ya se traza solo. Antes el mensaje no era
+       legible hasta 1,4 s en una página de 198 KB: media cascada basta. */
     @media (prefers-reduced-motion: no-preference) {
       .pagina > * {
         opacity: 0;
-        animation: aparecer 1000ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        animation: aparecer 500ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
       }
-      .pagina > .cabecera { animation-delay: 120ms; }
-      .pagina > .lamina   { animation-delay: 260ms; }
-      .pagina > .mensaje  { animation-delay: 420ms; }
+      .pagina > .cabecera { animation-delay: 60ms; }
+      .pagina > .lamina   { animation-delay: 140ms; }
+      .pagina > .mensaje  { animation-delay: 220ms; }
       @keyframes aparecer { to { opacity: 1; } }
 
-      .panel { animation: subir 260ms cubic-bezier(0.22, 1, 0.36, 1); }
-      @keyframes subir {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: none; }
+      /* El panel entra y sale por el mismo camino, desde la esquina del
+         botón, con un punto de muelle al llegar. */
+      .panel { animation: panel-entra 300ms cubic-bezier(0.22, 1.12, 0.36, 1); }
+      .panel.cerrando { animation: panel-sale 180ms cubic-bezier(0.4, 0, 0.9, 0.4); }
+
+      @keyframes panel-entra {
+        from { opacity: 0; transform: translateY(10px) scale(0.94); }
+        to   { opacity: 1; transform: none; }
       }
+      @keyframes panel-sale {
+        from { opacity: 1; transform: none; }
+        to   { opacity: 0; transform: translateY(6px) scale(0.96); }
+      }
+
+      .contacto-boton,
+      .enviar,
+      .cerrar { transition: opacity 180ms ease, color 180ms ease, transform 180ms cubic-bezier(0.22, 1, 0.36, 1); }
+
+      .contacto-boton:active,
+      .enviar:active { transform: scale(0.97); transition-duration: 60ms; }
+      .cerrar:active { transform: scale(0.9); transition-duration: 60ms; }
     }
 
     @media (max-width: 620px) {
-      .logo { width: min(80vw, 330px); }
       /* Deja sitio para que el botón fijo no pise la frase. */
-      .mensaje { padding-bottom: 104px; }
-      .panel { left: 18px; right: 18px; width: auto; }
+      .mensaje { padding-bottom: calc(var(--esquina) + var(--alto-boton) + var(--e)); }
+      .panel { left: var(--esquina); right: var(--esquina); width: auto; }
+    }
+
+    /* Móvil apaisado y pantallas bajas: sin esto el mensaje entero caía por
+       debajo del pliegue y nada indicaba que hubiera más página. */
+    @media (max-height: 560px) {
+      :root { --t-titular: calc(22px + var(--ritmo) * 0.4); }
+      .cabecera { padding-block: var(--e-05); }
+      .logo { width: min(80vw, clamp(150px, 22vw, 260px)); }
+      .lamina { min-height: 88px; }
+      .mensaje {
+        margin-top: var(--e-05);
+        /* El hueco a la derecha es el del botón fijo, que aquí queda a la
+           altura del mensaje. */
+        padding: var(--e-05) calc(var(--margen) + 150px) var(--e) var(--margen);
+      }
     }
   </style>
 </head>
 <body>
   <div class="pagina">
     <header class="cabecera">
-      <img class="logo" src="assets/logo-malo-negro.png" alt="MALO Architects" width="910" height="439">
+      <!-- SVG: el PNG de 910px se ampliaba hasta un 9 % en el elemento más
+           visible de la página. Vectorizado del original del kit, que se
+           conserva en assets/ como fuente. -->
+      <img class="logo" src="assets/logo-malo-negro.svg" alt="MALO Architects" width="910" height="439">
     </header>
 
     <section class="lamina">
@@ -350,32 +454,56 @@
       const recibido = document.getElementById("recibido");
       const titulo = document.getElementById("panel-titulo");
 
+      const sinMovimiento = window.matchMedia("(prefers-reduced-motion: reduce)");
+      const SALIDA = 180;   // el mismo tiempo que la animación .cerrando
+
+      let abierto = false;
+      let temporizador = null;
+
       function abrir() {
+        abierto = true;
+        if (temporizador) { clearTimeout(temporizador); temporizador = null; }
+        panel.classList.remove("cerrando");
         panel.hidden = false;
         boton.setAttribute("aria-expanded", "true");
         const primero = formulario.querySelector("input");
         if (primero && !formulario.hidden) primero.focus();
       }
 
-      function ocultar() {
-        panel.hidden = true;
-        boton.setAttribute("aria-expanded", "false");
-        // El siguiente que abra encuentra el formulario en blanco.
+      // El siguiente que abra encuentra el formulario en blanco.
+      function reiniciar() {
         formulario.hidden = false;
         recibido.hidden = true;
         titulo.hidden = false;
         formulario.reset();
       }
 
-      boton.addEventListener("click", () => (panel.hidden ? abrir() : ocultar()));
+      function ocultar() {
+        if (!abierto) return;
+        abierto = false;
+        boton.setAttribute("aria-expanded", "false");
+
+        const rematar = () => {
+          panel.classList.remove("cerrando");
+          panel.hidden = true;
+          reiniciar();
+          temporizador = null;
+        };
+
+        if (sinMovimiento.matches) { rematar(); return; }
+        panel.classList.add("cerrando");
+        temporizador = setTimeout(rematar, SALIDA);
+      }
+
+      boton.addEventListener("click", () => (abierto ? ocultar() : abrir()));
       cerrar.addEventListener("click", () => { ocultar(); boton.focus(); });
 
       document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape" && !panel.hidden) { ocultar(); boton.focus(); }
+        if (e.key === "Escape" && abierto) { ocultar(); boton.focus(); }
       });
 
       document.addEventListener("pointerdown", (e) => {
-        if (panel.hidden) return;
+        if (!abierto) return;
         if (!panel.contains(e.target) && !boton.contains(e.target)) ocultar();
       });
 

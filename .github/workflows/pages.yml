@@ -29,11 +29,12 @@ jobs:
       # Settings → Pages → Build and deployment → Source: GitHub Actions.
       - uses: actions/configure-pages@v5
 
-      # Solo lo que sirve la web: la portada, la marca y la animación compilada.
+      # Solo lo que sirve la web: la portada, el 404, la marca y la animación
+      # compilada.
       - name: Reunir el sitio
         run: |
           mkdir -p _site
-          cp index.html _site/
+          cp index.html 404.html _site/
           cp -r assets _site/
           cp -r dist _site/
 

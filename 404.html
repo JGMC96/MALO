@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MALO Architects — Página no encontrada</title>
+  <meta name="description" content="La página que buscabas no existe en MALO Architects.">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="robots" content="noindex">
+
+  <!-- GitHub Pages sirve este archivo ante cualquier ruta que no exista, así
+       que las rutas relativas se resolverían contra la ruta pedida y no
+       cargarían. De ahí que las de aquí sean absolutas desde la raíz del
+       sitio. Con dominio propio, cambia "/MALO/" por "/". -->
+  <link rel="icon" type="image/png" sizes="32x32" href="/MALO/assets/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="/MALO/assets/favicon-192.png">
+  <link rel="apple-touch-icon" href="/MALO/assets/apple-touch-icon-180.png">
+
+  <style>
+    @font-face {
+      font-family: "Bodoni Moda";
+      font-style: normal;
+      font-weight: 400 900;
+      font-display: swap;
+      src: url("/MALO/assets/fonts/bodoni-moda-latin.woff2") format("woff2");
+    }
+    @font-face {
+      font-family: "Bodoni Moda";
+      font-style: italic;
+      font-weight: 400 900;
+      font-display: swap;
+      src: url("/MALO/assets/fonts/bodoni-moda-latin-italic.woff2") format("woff2");
+    }
+
+    * { box-sizing: border-box; }
+
+    /* Los mismos tokens que la portada: un solo ritmo para todo lo que crece. */
+    :root {
+      --papel: #ffffff;
+      --tinta: #111111;
+      --gris: #737370;
+      --filete: rgba(17, 17, 17, 0.14);
+      --tinta-texto: #f2f2f0;
+
+      --serif: "Bodoni Moda", "Bodoni MT", Didot, "Times New Roman", serif;
+      --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+      --ritmo: clamp(0px, 2.143vw - 6.857px, 24px);
+
+      --t-titular:  calc(32px + var(--ritmo) * 1);
+      --t-frase:    calc(16px + var(--ritmo) * 0.2);
+      --t-cuerpo:   16px;
+      --t-etiqueta: 11px;
+
+      --i-titular: 1.04;
+      --i-cuerpo: 1.5;
+      --k-titular: -0.02em;
+      --k-etiqueta: 0.24em;
+
+      --e:    calc(8px + var(--ritmo) * 0.667);
+      --e-15: calc(var(--e) * 1.5);
+      --e-2:  calc(var(--e) * 2);
+      --e-3:  calc(var(--e) * 3);
+
+      --margen: var(--e-3);
+      --alto-boton: 44px;
+    }
+
+    html, body { height: 100%; }
+
+    body {
+      margin: 0;
+      background: var(--papel);
+      color: var(--tinta);
+      font-family: var(--sans);
+      font-size: var(--t-cuerpo);
+      line-height: var(--i-cuerpo);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .pagina {
+      min-height: 100svh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .cabecera { padding: var(--e-15) var(--margen); }
+
+    .logo {
+      display: block;
+      width: min(80vw, clamp(240px, 18.3vw + 240px, 460px));
+      height: auto;
+    }
+
+    .mensaje {
+      margin-top: auto;
+      padding: var(--e-15) var(--margen) var(--e-2);
+      border-top: 1px solid var(--filete);
+    }
+
+    .mensaje h1 {
+      margin: 0;
+      font-family: var(--serif);
+      font-size: var(--t-titular);
+      font-weight: 400;
+      letter-spacing: var(--k-titular);
+      line-height: var(--i-titular);
+      text-wrap: balance;
+    }
+
+    .mensaje .sigue {
+      margin: 0.55em 0 0;
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: var(--t-frase);
+      color: var(--gris);
+    }
+
+    .volver {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: var(--alto-boton);
+      margin-top: var(--e-2);
+      background: var(--tinta);
+      color: var(--tinta-texto);
+      font-size: var(--t-etiqueta);
+      letter-spacing: var(--k-etiqueta);
+      line-height: 1;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 0 26px;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+      transition: opacity 180ms ease;
+    }
+
+    .volver:hover { opacity: 0.82; }
+    .volver:active { opacity: 0.7; }
+    .volver:focus-visible { outline: 2px solid var(--tinta); outline-offset: 4px; }
+
+    @media (prefers-reduced-motion: no-preference) {
+      .volver { transition: opacity 180ms ease, transform 180ms cubic-bezier(0.22, 1, 0.36, 1); }
+      .volver:active { transform: scale(0.97); transition-duration: 60ms; }
+    }
+
+    @media (max-height: 560px) {
+      :root { --t-titular: calc(22px + var(--ritmo) * 0.4); }
+      .logo { width: min(80vw, clamp(150px, 22vw, 260px)); }
+    }
+  </style>
+</head>
+<body>
+  <div class="pagina">
+    <header class="cabecera">
+      <img class="logo" src="/MALO/assets/logo-malo-negro.svg" alt="MALO Architects" width="910" height="439">
+    </header>
+
+    <section class="mensaje">
+      <h1>Esta página no existe</h1>
+      <p class="sigue">Debe de estar todavía en obra.</p>
+      <a class="volver" href="/MALO/">Volver al inicio</a>
+    </section>
+  </div>
+</body>
+</html>

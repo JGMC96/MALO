@@ -12,6 +12,11 @@ a la rama por defecto. **Hay que activar Pages una vez** en el repositorio:
 Settings → Pages → Build and deployment → Source: **GitHub Actions**. A
 partir de ahí queda en `https://jgmc96.github.io/MALO/`.
 
+Se publican `index.html`, `404.html` (la página de "no encontrado", con la
+marca del estudio en vez de la genérica de GitHub), `assets/` y `dist/`.
+Las rutas de `404.html` son absolutas desde `/MALO/` porque Pages sirve ese
+archivo ante cualquier ruta inexistente; con dominio propio pasan a `/`.
+
 ---
 
 # Dibujar la obra
