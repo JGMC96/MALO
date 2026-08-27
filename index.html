@@ -53,6 +53,9 @@
       --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
 
       --margen: clamp(24px, 4.5vw, 72px);
+
+      /* Una sola curva para todo el movimiento de la página. */
+      --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
     }
 
     html, body { height: 100%; }
@@ -141,10 +144,14 @@
       text-transform: uppercase;
       padding: 16px 26px;
       cursor: pointer;
-      transition: opacity 180ms ease;
+      transition: opacity 180ms ease, transform 120ms var(--ease-out);
     }
 
-    .contacto-boton:hover { opacity: 0.82; }
+    @media (hover: hover) and (pointer: fine) {
+      .contacto-boton:hover { opacity: 0.82; }
+    }
+
+    .contacto-boton:active { transform: scale(0.97); }
     .contacto-boton:focus-visible { outline: 2px solid var(--tinta); outline-offset: 4px; }
 
     .panel {
@@ -159,9 +166,35 @@
       border: 1px solid var(--filete-fuerte);
       padding: clamp(22px, 2.4vw, 30px);
       box-shadow: 0 18px 48px rgba(17, 17, 17, 0.1);
+
+      /* Crece desde el botón que lo abre, no desde su propio centro.
+         Con transiciones (no fotogramas) para que aguante clics seguidos. */
+      transform-origin: 100% 100%;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(10px) scale(0.96);
+      transition:
+        opacity 180ms var(--ease-out),
+        transform 180ms var(--ease-out),
+        height 240ms var(--ease-out),
+        visibility 0s linear 180ms;
     }
 
-    .panel[hidden] { display: none; }
+    .panel.abierto {
+      opacity: 1;
+      visibility: visible;
+      transform: none;
+      transition:
+        opacity 220ms var(--ease-out),
+        transform 220ms var(--ease-out),
+        height 240ms var(--ease-out),
+        visibility 0s;
+    }
+
+    /* Relevo entre el formulario y la confirmación. */
+    .formulario, .panel h2 { transition: opacity 140ms var(--ease-out); }
+    .recibido { transition: opacity 180ms var(--ease-out) 60ms; }
+    .se-va, .recibido.llega { opacity: 0; }
 
     .panel-cabecera {
       display: flex;
@@ -191,9 +224,14 @@
       line-height: 1;
       padding: 4px;
       cursor: pointer;
+      transition: color 180ms ease, transform 120ms var(--ease-out);
     }
 
-    .cerrar:hover { color: var(--tinta); }
+    @media (hover: hover) and (pointer: fine) {
+      .cerrar:hover { color: var(--tinta); }
+    }
+
+    .cerrar:active { transform: scale(0.9); }
     .cerrar:focus-visible { outline: 2px solid var(--tinta); outline-offset: 2px; }
 
     .formulario { display: flex; flex-direction: column; gap: 18px; }
@@ -240,10 +278,14 @@
       text-transform: uppercase;
       padding: 14px 26px;
       cursor: pointer;
-      transition: opacity 180ms ease;
+      transition: opacity 180ms ease, transform 120ms var(--ease-out);
     }
 
-    .enviar:hover { opacity: 0.82; }
+    @media (hover: hover) and (pointer: fine) {
+      .enviar:hover { opacity: 0.82; }
+    }
+
+    .enviar:active { transform: scale(0.97); }
     .enviar:focus-visible { outline: 2px solid var(--tinta); outline-offset: 4px; }
 
     .recibido[hidden] { display: none; }
@@ -267,18 +309,26 @@
     @media (prefers-reduced-motion: no-preference) {
       .pagina > * {
         opacity: 0;
-        animation: aparecer 1000ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        animation: aparecer 1000ms var(--ease-out) forwards;
       }
       .pagina > .cabecera { animation-delay: 120ms; }
       .pagina > .lamina   { animation-delay: 260ms; }
       .pagina > .mensaje  { animation-delay: 420ms; }
       @keyframes aparecer { to { opacity: 1; } }
+    }
 
-      .panel { animation: subir 260ms cubic-bezier(0.22, 1, 0.36, 1); }
-      @keyframes subir {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: none; }
+    /* Menos movimiento: se queda el fundido, se va el desplazamiento. */
+    @media (prefers-reduced-motion: reduce) {
+      .panel {
+        transform: none;
+        transition: opacity 150ms ease, visibility 0s linear 150ms;
       }
+      .panel.abierto {
+        transition: opacity 150ms ease, visibility 0s;
+      }
+      .contacto-boton:active,
+      .enviar:active,
+      .cerrar:active { transform: none; opacity: 0.7; }
     }
 
     @media (max-width: 620px) {
@@ -307,7 +357,7 @@
 
   <button class="contacto-boton" id="abrir" aria-expanded="false" aria-controls="panel">Contacto</button>
 
-  <div class="panel" id="panel" role="dialog" aria-labelledby="panel-titulo" hidden>
+  <div class="panel" id="panel" role="dialog" aria-labelledby="panel-titulo">
     <div class="panel-cabecera">
       <h2 id="panel-titulo">Contacto</h2>
       <button class="cerrar" id="cerrar" aria-label="Cerrar">&times;</button>
@@ -350,42 +400,86 @@
       const recibido = document.getElementById("recibido");
       const titulo = document.getElementById("panel-titulo");
 
-      function abrir() {
-        panel.hidden = false;
-        boton.setAttribute("aria-expanded", "true");
-        const primero = formulario.querySelector("input");
-        if (primero && !formulario.hidden) primero.focus();
-      }
+      const menosMovimiento = matchMedia("(prefers-reduced-motion: reduce)");
 
-      function ocultar() {
-        panel.hidden = true;
-        boton.setAttribute("aria-expanded", "false");
-        // El siguiente que abra encuentra el formulario en blanco.
+      const estaAbierto = () => panel.classList.contains("abierto");
+
+      function reponer() {
+        panel.style.height = "";
         formulario.hidden = false;
-        recibido.hidden = true;
+        formulario.classList.remove("se-va");
         titulo.hidden = false;
+        titulo.classList.remove("se-va");
+        recibido.hidden = true;
+        recibido.classList.remove("llega");
         formulario.reset();
       }
 
-      boton.addEventListener("click", () => (panel.hidden ? abrir() : ocultar()));
+      function abrir() {
+        // Si se cerró y se reabrió antes de que terminara la salida, la
+        // confirmación seguiría puesta: se repone aquí también.
+        if (formulario.hidden) reponer();
+        panel.classList.add("abierto");
+        boton.setAttribute("aria-expanded", "true");
+        const primero = formulario.querySelector("input");
+        if (primero) primero.focus();
+      }
+
+      function ocultar() {
+        panel.classList.remove("abierto");
+        boton.setAttribute("aria-expanded", "false");
+        // El siguiente que abra encuentra el formulario en blanco. Se repone
+        // al terminar la salida para que no se vea el cambio.
+        setTimeout(() => {
+          if (!estaAbierto()) reponer();
+        }, menosMovimiento.matches ? 150 : 180);
+      }
+
+      boton.addEventListener("click", () => (estaAbierto() ? ocultar() : abrir()));
       cerrar.addEventListener("click", () => { ocultar(); boton.focus(); });
 
       document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape" && !panel.hidden) { ocultar(); boton.focus(); }
+        if (e.key === "Escape" && estaAbierto()) { ocultar(); boton.focus(); }
       });
 
       document.addEventListener("pointerdown", (e) => {
-        if (panel.hidden) return;
+        if (!estaAbierto()) return;
         if (!panel.contains(e.target) && !boton.contains(e.target)) ocultar();
       });
+
+      // El formulario deja paso a la confirmación: se va el formulario, la
+      // caja se asienta en su nueva altura y el mensaje llega mientras tanto.
+      function mostrarRecibido() {
+        const altoAntes = panel.offsetHeight;
+
+        formulario.hidden = true;
+        titulo.hidden = true;
+        recibido.hidden = false;
+        recibido.classList.add("llega");
+
+        if (!menosMovimiento.matches) {
+          const altoDespues = panel.offsetHeight;
+          panel.style.height = altoAntes + "px";
+          panel.getBoundingClientRect();          // fuerza el reflujo
+          panel.style.height = altoDespues + "px";
+          panel.addEventListener("transitionend", function fin(ev) {
+            if (ev.propertyName !== "height") return;
+            panel.style.height = "";
+            panel.removeEventListener("transitionend", fin);
+          });
+        }
+
+        requestAnimationFrame(() => recibido.classList.remove("llega"));
+        recibido.focus();
+      }
 
       formulario.addEventListener("submit", (e) => {
         e.preventDefault();
         if (!formulario.reportValidity()) return;
-        formulario.hidden = true;
-        titulo.hidden = true;
-        recibido.hidden = false;
-        recibido.focus();
+        if (menosMovimiento.matches) { mostrarRecibido(); return; }
+        formulario.classList.add("se-va");
+        titulo.classList.add("se-va");
+        setTimeout(mostrarRecibido, 140);
       });
     })();
   </script>
