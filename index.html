@@ -421,19 +421,36 @@
 
       const menosMovimiento = matchMedia("(prefers-reduced-motion: reduce)");
 
-      // El vídeo de fondo: quieto con "menos movimiento", en pausa en pestañas ocultas.
+      // El vídeo de fondo. Si el navegador no deja arrancarlo (iOS con
+      // ahorro de energía, navegadores dentro de apps), que al menos nunca
+      // se vea el papel en blanco del fotograma 0: se salta a la obra
+      // completa y se reintenta el arranque a la primera ocasión.
       const video = document.querySelector(".dibujo video");
       video.muted = true; // el autoplay exige silencio; la propiedad, no solo el atributo
+
+      const obraCompleta = () => {
+        const fijar = () => { try { video.currentTime = 36; } catch (e) {} };
+        if (video.readyState >= 1) fijar();
+        else video.addEventListener("loadedmetadata", fijar, { once: true });
+      };
+
       if (menosMovimiento.matches) {
         video.autoplay = false;
         video.pause();
-        video.currentTime = 36;
+        obraCompleta();
       } else {
-        const arrancar = () => { if (video.paused && !document.hidden) video.play().catch(() => {}); };
+        const arrancar = () => {
+          if (video.paused && !document.hidden) video.play().catch(() => {});
+        };
         arrancar();
-        // Si el navegador bloqueó el autoplay (marcos aislados, ahorro de
-        // energía), arranca al primer gesto del visitante.
-        for (const ev of ["pointerdown", "keydown", "touchstart"]) {
+        // En cuanto haya datos: si sigue parado, enseña la obra completa
+        // (no la hoja vacía) y prueba a arrancar otra vez.
+        video.addEventListener("loadeddata", () => {
+          if (video.paused) { obraCompleta(); arrancar(); }
+        }, { once: true });
+        video.addEventListener("canplay", arrancar, { once: true });
+        // Y al primer gesto del visitante, del tipo que sea.
+        for (const ev of ["pointerdown", "touchstart", "keydown", "scroll"]) {
           document.addEventListener(ev, arrancar, { once: true, passive: true });
         }
         document.addEventListener("visibilitychange", () => {
