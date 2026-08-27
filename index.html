@@ -309,11 +309,11 @@
     @media (prefers-reduced-motion: no-preference) {
       .pagina > * {
         opacity: 0;
-        animation: aparecer 1000ms var(--ease-out) forwards;
+        animation: aparecer 420ms var(--ease-out) forwards;
       }
-      .pagina > .cabecera { animation-delay: 120ms; }
-      .pagina > .lamina   { animation-delay: 260ms; }
-      .pagina > .mensaje  { animation-delay: 420ms; }
+      .pagina > .cabecera { animation-delay: 0ms; }
+      .pagina > .lamina   { animation-delay: 80ms; }
+      .pagina > .mensaje  { animation-delay: 160ms; }
       @keyframes aparecer { to { opacity: 1; } }
     }
 
@@ -404,6 +404,9 @@
 
       const estaAbierto = () => panel.classList.contains("abierto");
 
+      // Temporizador del relevo, para poder cancelarlo si el panel se cierra.
+      let relevo = 0;
+
       function reponer() {
         panel.style.height = "";
         formulario.hidden = false;
@@ -426,6 +429,8 @@
       }
 
       function ocultar() {
+        clearTimeout(relevo);
+        relevo = 0;
         panel.classList.remove("abierto");
         boton.setAttribute("aria-expanded", "false");
         // El siguiente que abra encuentra el formulario en blanco. Se repone
@@ -450,6 +455,11 @@
       // El formulario deja paso a la confirmación: se va el formulario, la
       // caja se asienta en su nueva altura y el mensaje llega mientras tanto.
       function mostrarRecibido() {
+        relevo = 0;
+        // Si el panel se cerró a media secuencia no hay nada que mostrar: medir
+        // y enfocar aquí dejaría una altura fija sobre algo invisible.
+        if (!estaAbierto()) return;
+
         const altoAntes = panel.offsetHeight;
 
         formulario.hidden = true;
@@ -479,7 +489,7 @@
         if (menosMovimiento.matches) { mostrarRecibido(); return; }
         formulario.classList.add("se-va");
         titulo.classList.add("se-va");
-        setTimeout(mostrarRecibido, 140);
+        relevo = setTimeout(mostrarRecibido, 140);
       });
     })();
   </script>
