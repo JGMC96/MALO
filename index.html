@@ -76,7 +76,7 @@
 
     /* Cabecera: solo el logo, arriba a la izquierda y sobre papel limpio. */
     .cabecera {
-      padding: clamp(18px, 2vw, 26px) var(--margen);
+      padding: clamp(14px, 1.6vw, 20px) var(--margen);
     }
 
     .logo {
@@ -91,23 +91,26 @@
       min-height: 220px;
     }
 
-    /* En absoluto para que el canvas no arrastre la altura de la página.
-       El ancho máximo recorta el papel sobrante en pantallas muy anchas:
-       el dibujo se escala con la altura de la banda, no con el ancho. */
+    /* En absoluto para que el vídeo no arrastre la altura de la página. */
     .dibujo {
       position: absolute;
-      top: 0;
-      bottom: 0;
-      left: var(--margen);
-      right: var(--margen);
-      max-width: 1040px;
-      margin-inline: auto;
+      inset: 0 var(--margen);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .dibujo video {
+      width: 100%;
+      height: 100%;
+      max-width: 1500px;
+      object-fit: contain;
     }
 
     .mensaje {
-      padding: clamp(22px, 2.8vw, 34px) var(--margen) clamp(28px, 3.6vw, 46px);
+      padding: clamp(18px, 2.2vw, 26px) var(--margen) clamp(24px, 3vw, 38px);
       border-top: 1px solid var(--filete);
-      margin-top: clamp(14px, 1.8vw, 24px);
+      margin-top: clamp(10px, 1.4vw, 18px);
     }
 
     .mensaje h1 {
@@ -118,6 +121,21 @@
       letter-spacing: -0.015em;
       line-height: 1.04;
       text-wrap: balance;
+    }
+
+    /* Cursor de escritura: la página aún se está escribiendo. */
+    .caret {
+      display: inline-block;
+      width: 0.045em;
+      height: 0.72em;
+      margin-left: 0.14em;
+      background: currentColor;
+      transform: translateY(0.04em);
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      .caret { animation: escribir 1.1s steps(1) infinite; }
+      @keyframes escribir { 50% { opacity: 0; } }
     }
 
     .mensaje .sigue {
@@ -333,6 +351,7 @@
 
     @media (max-width: 620px) {
       .logo { width: min(80vw, 330px); }
+      .dibujo video { object-fit: cover; object-position: 56% center; }
       /* Deja sitio para que el botón fijo no pise la frase. */
       .mensaje { padding-bottom: 104px; }
       .panel { left: 18px; right: 18px; width: auto; }
@@ -346,11 +365,14 @@
     </header>
 
     <section class="lamina">
-      <div class="dibujo" id="fondo" aria-hidden="true"></div>
+      <div class="dibujo" aria-hidden="true">
+        <video src="media/dibujar-la-obra.mp4" poster="media/dibujar-la-obra-poster.jpg"
+               autoplay muted loop playsinline preload="auto" width="1664" height="1008"></video>
+      </div>
     </section>
 
     <section class="mensaje">
-      <h1>Web en construcción</h1>
+      <h1>Web en construcción<span class="caret" aria-hidden="true"></span></h1>
       <p class="sigue">Mientras tanto, la obra sigue.</p>
     </section>
   </div>
@@ -388,10 +410,7 @@
     </div>
   </div>
 
-  <script src="dist/architectural-site.js"></script>
   <script>
-    ArchitecturalSite.mount(document.getElementById("fondo"), { intensity: 0.85 });
-
     (function () {
       const boton = document.getElementById("abrir");
       const panel = document.getElementById("panel");
@@ -401,6 +420,19 @@
       const titulo = document.getElementById("panel-titulo");
 
       const menosMovimiento = matchMedia("(prefers-reduced-motion: reduce)");
+
+      // El vídeo de fondo: quieto con "menos movimiento", en pausa en pestañas ocultas.
+      const video = document.querySelector(".dibujo video");
+      if (menosMovimiento.matches) {
+        video.autoplay = false;
+        video.pause();
+        video.currentTime = 36;
+      } else {
+        document.addEventListener("visibilitychange", () => {
+          if (document.hidden) video.pause();
+          else video.play().catch(() => {});
+        });
+      }
 
       const estaAbierto = () => panel.classList.contains("abierto");
 
