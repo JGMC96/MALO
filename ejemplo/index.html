@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dibujar la obra — ejemplo</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #fff; color: #131416;
+           font-family: ui-sans-serif, system-ui, sans-serif; }
+    .hero { position: relative; height: 100svh; min-height: 620px; overflow: hidden; }
+    .fondo { position: absolute; inset: 0; }
+    .contenido { position: relative; height: 100%; display: flex; flex-direction: column;
+                 justify-content: space-between; padding: clamp(24px, 5vw, 64px); }
+    .eyebrow { margin: 0; font-size: 10px; letter-spacing: 0.45em; text-transform: uppercase;
+               color: rgba(19,20,22,0.45); font-family: ui-monospace, monospace; }
+    h1 { margin: 0; font-size: clamp(2.8rem, 9vw, 7rem); font-weight: 500;
+         letter-spacing: -0.04em; line-height: 0.88; }
+    p.pie { margin: 0; font-size: 12px; color: rgba(19,20,22,0.4); }
+  </style>
+</head>
+<body>
+  <section class="hero">
+    <!-- El fondo. Se dibuja solo; no captura el ratón ni lo leen los lectores de pantalla. -->
+    <div class="fondo" id="fondo"></div>
+
+    <div class="contenido">
+      <p class="eyebrow">Estudio de arquitectura</p>
+      <h1>Dibujar<br>es construir</h1>
+      <p class="pie">Ciclo de 40 s — bucle continuo</p>
+    </div>
+  </section>
+
+  <script src="../dist/architectural-site.js"></script>
+  <script>
+    ArchitecturalSite.mount(document.getElementById("fondo"), { intensity: 0.92 });
+  </script>
+</body>
+</html>
