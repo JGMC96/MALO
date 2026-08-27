@@ -423,14 +423,21 @@
 
       // El vídeo de fondo: quieto con "menos movimiento", en pausa en pestañas ocultas.
       const video = document.querySelector(".dibujo video");
+      video.muted = true; // el autoplay exige silencio; la propiedad, no solo el atributo
       if (menosMovimiento.matches) {
         video.autoplay = false;
         video.pause();
         video.currentTime = 36;
       } else {
+        const arrancar = () => { if (video.paused && !document.hidden) video.play().catch(() => {}); };
+        arrancar();
+        // Si el navegador bloqueó el autoplay (marcos aislados, ahorro de
+        // energía), arranca al primer gesto del visitante.
+        for (const ev of ["pointerdown", "keydown", "touchstart"]) {
+          document.addEventListener(ev, arrancar, { once: true, passive: true });
+        }
         document.addEventListener("visibilitychange", () => {
-          if (document.hidden) video.pause();
-          else video.play().catch(() => {});
+          if (document.hidden) video.pause(); else arrancar();
         });
       }
 
