@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MALO — Estudio de arquitectura</title>
+  <meta name="description" content="MALO, estudio de arquitectura. Web en construcción. ¿Tomamos un café?">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23ffffff'/%3E%3Ctext x='32' y='46' font-family='Helvetica,Arial,sans-serif' font-size='42' font-weight='600' text-anchor='middle' fill='%23131416'%3EM%3C/text%3E%3C/svg%3E">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <style>
+    * { box-sizing: border-box; }
+
+    :root {
+      --tinta: #131416;
+      --tinta-45: rgba(19, 20, 22, 0.45);
+      --tinta-60: rgba(19, 20, 22, 0.6);
+    }
+
+    html, body { height: 100%; }
+
+    body {
+      margin: 0;
+      background: #fff;
+      color: var(--tinta);
+      font-family: "Inter Tight", ui-sans-serif, system-ui, "Helvetica Neue", Arial, sans-serif;
+      font-weight: 400;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .hero {
+      position: relative;
+      height: 100svh;
+      min-height: 560px;
+      overflow: hidden;
+    }
+
+    .fondo { position: absolute; inset: 0; }
+
+    .contenido {
+      position: relative;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: clamp(24px, 5vw, 64px);
+    }
+
+    .arriba {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 16px;
+    }
+
+    .eyebrow {
+      margin: 0;
+      font-size: 10px;
+      letter-spacing: 0.45em;
+      text-transform: uppercase;
+      color: var(--tinta-45);
+    }
+
+    .centro { max-width: 18em; }
+
+    h1 {
+      margin: 0 0 0.35em -0.05em;
+      font-size: clamp(4.5rem, 16vw, 12rem);
+      font-weight: 500;
+      letter-spacing: -0.05em;
+      line-height: 0.85;
+    }
+
+    .estado {
+      margin: 0;
+      font-size: clamp(0.95rem, 1.6vw, 1.15rem);
+      font-weight: 300;
+      letter-spacing: 0.01em;
+      color: var(--tinta-60);
+    }
+
+    .estado strong { font-weight: 400; color: var(--tinta); }
+
+    .abajo {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 16px;
+    }
+
+    .cafe {
+      margin: 0;
+      font-size: clamp(1.1rem, 2.4vw, 1.6rem);
+      font-weight: 400;
+      letter-spacing: -0.01em;
+    }
+
+    .cafe a {
+      color: inherit;
+      text-decoration: none;
+      border-bottom: 1px solid currentColor;
+      padding-bottom: 0.08em;
+      transition: opacity 160ms ease;
+    }
+
+    .cafe a:hover { opacity: 0.55; }
+
+    .cafe .correo {
+      display: block;
+      margin-top: 0.5em;
+      font-size: 0.68em;
+      font-weight: 300;
+      color: var(--tinta-60);
+    }
+
+    .pie {
+      margin: 0;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      color: var(--tinta-45);
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    /* Entrada serena del contenido; el fondo ya se dibuja solo. */
+    @media (prefers-reduced-motion: no-preference) {
+      .contenido > * {
+        opacity: 0;
+        transform: translateY(8px);
+        animation: aparecer 900ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+      }
+      .contenido > .arriba  { animation-delay: 150ms; }
+      .contenido > .centro  { animation-delay: 350ms; }
+      .contenido > .abajo   { animation-delay: 550ms; }
+      @keyframes aparecer {
+        to { opacity: 1; transform: none; }
+      }
+    }
+
+    @media (max-width: 560px) {
+      .abajo { flex-direction: column; align-items: flex-start; }
+      .pie { text-align: left; }
+    }
+  </style>
+</head>
+<body>
+  <main class="hero">
+    <div class="fondo" id="fondo" aria-hidden="true"></div>
+
+    <div class="contenido">
+      <header class="arriba">
+        <p class="eyebrow">MALO</p>
+        <p class="eyebrow">Estudio de arquitectura</p>
+      </header>
+
+      <section class="centro">
+        <h1>MALO</h1>
+        <p class="estado"><strong>Web en construcción.</strong> Mientras tanto, la obra sigue.</p>
+      </section>
+
+      <footer class="abajo">
+        <p class="cafe">
+          <!-- Cambia hola@estudiomalo.com por el correo real del estudio -->
+          <a href="mailto:hola@estudiomalo.com">¿Tomamos un café?</a>
+          <span class="correo">hola@estudiomalo.com</span>
+        </p>
+        <p class="pie">© 2026 MALO</p>
+      </footer>
+    </div>
+  </main>
+
+  <script src="dist/architectural-site.js"></script>
+  <script>
+    ArchitecturalSite.mount(document.getElementById("fondo"), { intensity: 0.85 });
+  </script>
+</body>
+</html>
