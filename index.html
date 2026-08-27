@@ -71,26 +71,14 @@
       flex-direction: column;
     }
 
-    .eyebrow {
-      margin: 0;
-      font-size: 10px;
-      letter-spacing: 0.42em;
-      text-transform: uppercase;
-      color: var(--gris);
-    }
-
-    /* Cabecera: el logo manda desde la derecha, sobre papel limpio. */
+    /* Cabecera: solo el logo, arriba a la izquierda y sobre papel limpio. */
     .cabecera {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 24px;
       padding: clamp(18px, 2vw, 26px) var(--margen);
     }
 
     .logo {
       display: block;
-      width: clamp(200px, 26vw, 400px);
+      width: clamp(220px, 30vw, 460px);
       height: auto;
     }
 
@@ -294,8 +282,9 @@
     }
 
     @media (max-width: 620px) {
-      .cabecera { flex-direction: column; align-items: flex-start; gap: 16px; }
-      .logo { width: min(74vw, 300px); align-self: flex-end; }
+      .logo { width: min(80vw, 330px); }
+      /* Deja sitio para que el botón fijo no pise la frase. */
+      .mensaje { padding-bottom: 104px; }
       .panel { left: 18px; right: 18px; width: auto; }
     }
   </style>
@@ -303,7 +292,6 @@
 <body>
   <div class="pagina">
     <header class="cabecera">
-      <p class="eyebrow">Estudio de arquitectura</p>
       <img class="logo" src="assets/logo-malo-negro.png" alt="MALO Architects" width="910" height="439">
     </header>
 
