@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>MALO Architects — Estudio de arquitectura</title>
-  <meta name="description" content="MALO Architects, estudio de arquitectura. Web en construcción. ¿Tomamos un café?">
+  <meta name="description" content="MALO Architects, estudio de arquitectura. Web en construcción.">
 
   <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16.png">
@@ -12,7 +12,7 @@
   <link rel="apple-touch-icon" href="assets/apple-touch-icon-180.png">
 
   <meta property="og:title" content="MALO Architects">
-  <meta property="og:description" content="Estudio de arquitectura. Web en construcción. ¿Tomamos un café?">
+  <meta property="og:description" content="Estudio de arquitectura. Web en construcción.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://jgmc96.github.io/MALO/">
   <!-- Con dominio propio, cambia estas dos URL absolutas por las del dominio. -->
@@ -20,7 +20,7 @@
   <meta name="twitter:card" content="summary_large_image">
 
   <style>
-    /* Tipografía de marca (kit gráfico): Bodoni Moda para titulares, autoalojada. */
+    /* Tipografía de marca del kit, autoalojada. */
     @font-face {
       font-family: "Bodoni Moda";
       font-style: normal;
@@ -38,158 +38,198 @@
 
     * { box-sizing: border-box; }
 
+    /* Un solo mundo visual: tinta sobre papel blanco. La animación da por
+       supuesto el papel blanco, así que la página no cambia con el tema. */
     :root {
-      /* Colores del kit gráfico */
+      --papel: #ffffff;
       --tinta: #111111;
       --gris: #8a8a86;
+      --filete: rgba(17, 17, 17, 0.14);
+      --tinta-texto: #f2f2f0;
+      --tinta-gris: #9a9a95;
+
       --serif: "Bodoni Moda", "Bodoni MT", Didot, "Times New Roman", serif;
       --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+      --margen: clamp(24px, 4.5vw, 72px);
     }
 
     html, body { height: 100%; }
 
     body {
       margin: 0;
-      background: #fff;
+      background: var(--papel);
       color: var(--tinta);
       font-family: var(--sans);
       -webkit-font-smoothing: antialiased;
     }
 
-    .hero {
-      position: relative;
-      height: 100svh;
-      min-height: 560px;
-      overflow: hidden;
-    }
-
-    .fondo { position: absolute; inset: 0; }
-
-    .contenido {
-      position: relative;
-      height: 100%;
+    .pagina {
+      min-height: 100svh;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
-      padding: clamp(24px, 5vw, 64px);
     }
 
     .eyebrow {
       margin: 0;
       font-size: 10px;
-      letter-spacing: 0.45em;
+      letter-spacing: 0.42em;
       text-transform: uppercase;
       color: var(--gris);
     }
 
-    .centro { max-width: 34em; }
+    /* Cabecera: el logo manda desde la derecha, sobre papel limpio. */
+    .cabecera {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 24px;
+      padding: clamp(20px, 2.6vw, 32px) var(--margen);
+    }
 
     .logo {
       display: block;
-      width: clamp(260px, 36vw, 540px);
+      width: clamp(132px, 14vw, 208px);
       height: auto;
-      margin: 0 0 clamp(20px, 3vw, 36px) 0;
     }
 
-    .estado {
+    /* La lámina: el dibujo, con aire por los cuatro costados. */
+    .lamina {
+      position: relative;
+      flex: 1 1 auto;
+      min-height: 240px;
+    }
+
+    /* En absoluto para que el canvas no arrastre la altura de la página.
+       El ancho máximo recorta el papel sobrante en pantallas muy anchas:
+       el dibujo se escala con la altura de la banda, no con el ancho. */
+    .dibujo {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: var(--margen);
+      right: var(--margen);
+      max-width: 1040px;
+      margin-inline: auto;
+    }
+
+    .mensaje {
+      padding: clamp(22px, 2.8vw, 34px) var(--margen) clamp(24px, 3.2vw, 40px);
+      border-top: 1px solid var(--filete);
+      margin-top: clamp(14px, 1.8vw, 24px);
+    }
+
+    .mensaje h1 {
       margin: 0;
-      text-shadow: 0 0 14px #fff, 0 0 4px #fff, 0 0 2px #fff;
       font-family: var(--serif);
-      font-size: clamp(1.05rem, 2vw, 1.45rem);
+      font-size: clamp(2rem, 4.6vw, 3.5rem);
       font-weight: 400;
-      line-height: 1.45;
+      letter-spacing: -0.015em;
+      line-height: 1.04;
+      text-wrap: balance;
     }
 
-    .estado em {
+    .mensaje .sigue {
+      margin: 0.55em 0 0;
+      font-family: var(--serif);
       font-style: italic;
+      font-size: clamp(1rem, 1.7vw, 1.3rem);
       color: var(--gris);
     }
 
-    .abajo {
+    /* Banda de contacto: tinta plena, a sangre. */
+    .contacto {
+      background: var(--tinta);
+      color: var(--tinta-texto);
+      padding: clamp(22px, 2.8vw, 34px) var(--margen);
       display: flex;
       justify-content: space-between;
       align-items: flex-end;
-      gap: 16px;
+      gap: clamp(16px, 3vw, 48px);
+      flex-wrap: wrap;
     }
 
-    .cafe { margin: 0; }
+    /* El correo cae sobre el mismo margen que el titular. */
+    .contacto .bloque {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: clamp(10px, 1.2vw, 16px);
+    }
 
-    .cafe a {
+    .contacto .eyebrow { color: var(--tinta-gris); }
+
+    .contacto .correo {
       font-family: var(--serif);
-      font-size: clamp(1.35rem, 2.8vw, 2rem);
-      font-weight: 400;
-      color: inherit;
+      font-size: clamp(1.5rem, 3.4vw, 2.6rem);
+      color: var(--tinta-texto);
       text-decoration: none;
-      border-bottom: 1px solid currentColor;
-      padding-bottom: 0.1em;
-      transition: opacity 160ms ease;
+      border-bottom: 1px solid rgba(242, 242, 240, 0.35);
+      padding-bottom: 0.08em;
+      transition: border-color 180ms ease;
     }
 
-    .cafe a:hover { opacity: 0.55; }
+    .contacto .correo:hover { border-bottom-color: var(--tinta-texto); }
 
-    .cafe .correo {
-      display: block;
-      margin-top: 0.9em;
-      font-size: 0.8rem;
-      letter-spacing: 0.04em;
-      color: var(--gris);
+    .contacto .correo:focus-visible {
+      outline: 2px solid var(--tinta-texto);
+      outline-offset: 8px;
+      border-bottom-color: transparent;
     }
 
-    .pie {
+    .contacto .lugar {
       margin: 0;
       font-size: 11px;
-      letter-spacing: 0.08em;
-      color: var(--gris);
-      text-align: right;
-      white-space: nowrap;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--tinta-gris);
     }
 
-    /* Entrada serena del contenido; el fondo ya se dibuja solo. */
+    /* Entrada serena; el dibujo ya se traza solo. */
     @media (prefers-reduced-motion: no-preference) {
-      .contenido > * {
+      .pagina > * {
         opacity: 0;
-        transform: translateY(8px);
-        animation: aparecer 900ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        animation: aparecer 1000ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
       }
-      .contenido > .arriba  { animation-delay: 150ms; }
-      .contenido > .centro  { animation-delay: 350ms; }
-      .contenido > .abajo   { animation-delay: 550ms; }
-      @keyframes aparecer {
-        to { opacity: 1; transform: none; }
-      }
+      .pagina > .cabecera { animation-delay: 120ms; }
+      .pagina > .lamina   { animation-delay: 260ms; }
+      .pagina > .mensaje  { animation-delay: 420ms; }
+      .pagina > .contacto { animation-delay: 560ms; }
+      @keyframes aparecer { to { opacity: 1; } }
     }
 
-    @media (max-width: 560px) {
-      .logo { width: min(78vw, 360px); }
-      .abajo { flex-direction: column; align-items: flex-start; }
-      .pie { text-align: left; }
+    @media (max-width: 620px) {
+      .cabecera { flex-direction: column; align-items: flex-start; gap: 18px; }
+      .logo { width: min(58vw, 210px); align-self: flex-end; }
+      .contacto { flex-direction: column; align-items: flex-start; gap: 14px; }
     }
   </style>
 </head>
 <body>
-  <main class="hero">
-    <div class="fondo" id="fondo" aria-hidden="true"></div>
+  <div class="pagina">
+    <header class="cabecera">
+      <p class="eyebrow">Estudio de arquitectura</p>
+      <img class="logo" src="assets/logo-malo-negro.png" alt="MALO Architects" width="910" height="439">
+    </header>
 
-    <div class="contenido">
-      <header class="arriba">
-        <p class="eyebrow">Estudio de arquitectura</p>
-      </header>
+    <section class="lamina">
+      <div class="dibujo" id="fondo" aria-hidden="true"></div>
+    </section>
 
-      <section class="centro">
-        <img class="logo" src="assets/logo-malo-negro.png" alt="MALO Architects" width="910" height="439">
-        <p class="estado">Web en construcción. <em>Mientras tanto, la obra sigue.</em></p>
-      </section>
+    <section class="mensaje">
+      <h1>Web en construcción</h1>
+      <p class="sigue">Mientras tanto, la obra sigue.</p>
+    </section>
 
-      <footer class="abajo">
-        <p class="cafe">
-          <!-- Cambia hola@estudiomalo.com por el correo real del estudio -->
-          <a href="mailto:hola@estudiomalo.com">¿Tomamos un café?</a>
-          <span class="correo">hola@estudiomalo.com</span>
-        </p>
-        <p class="pie">© 2026 MALO Architects</p>
-      </footer>
-    </div>
-  </main>
+    <footer class="contacto">
+      <div class="bloque">
+        <p class="eyebrow">Contacto</p>
+        <!-- Cambia hola@estudiomalo.com por el correo real del estudio -->
+        <a class="correo" href="mailto:hola@estudiomalo.com">hola@estudiomalo.com</a>
+      </div>
+      <p class="lugar">© 2026 MALO Architects</p>
+    </footer>
+  </div>
 
   <script src="dist/architectural-site.js"></script>
   <script>
