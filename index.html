@@ -3,21 +3,44 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>MALO — Estudio de arquitectura</title>
-  <meta name="description" content="MALO, estudio de arquitectura. Web en construcción. ¿Tomamos un café?">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23ffffff'/%3E%3Ctext x='32' y='46' font-family='Helvetica,Arial,sans-serif' font-size='42' font-weight='600' text-anchor='middle' fill='%23131416'%3EM%3C/text%3E%3C/svg%3E">
+  <title>MALO Architects — Estudio de arquitectura</title>
+  <meta name="description" content="MALO Architects, estudio de arquitectura. Web en construcción. ¿Tomamos un café?">
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/favicon-192.png">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon-180.png">
+
+  <meta property="og:title" content="MALO Architects">
+  <meta property="og:description" content="Estudio de arquitectura. Web en construcción. ¿Tomamos un café?">
+  <!-- Al publicar con dominio propio, cambia esta URL por la absoluta: https://tudominio.com/assets/og-image-1200x630.png -->
+  <meta property="og:image" content="assets/og-image-1200x630.png">
 
   <style>
+    /* Tipografía de marca (kit gráfico): Bodoni Moda para titulares, autoalojada. */
+    @font-face {
+      font-family: "Bodoni Moda";
+      font-style: normal;
+      font-weight: 400 900;
+      font-display: swap;
+      src: url("assets/fonts/bodoni-moda-latin.woff2") format("woff2");
+    }
+    @font-face {
+      font-family: "Bodoni Moda";
+      font-style: italic;
+      font-weight: 400 900;
+      font-display: swap;
+      src: url("assets/fonts/bodoni-moda-latin-italic.woff2") format("woff2");
+    }
+
     * { box-sizing: border-box; }
 
     :root {
-      --tinta: #131416;
-      --tinta-45: rgba(19, 20, 22, 0.45);
-      --tinta-60: rgba(19, 20, 22, 0.6);
+      /* Colores del kit gráfico */
+      --tinta: #111111;
+      --gris: #8a8a86;
+      --serif: "Bodoni Moda", "Bodoni MT", Didot, "Times New Roman", serif;
+      --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
     }
 
     html, body { height: 100%; }
@@ -26,8 +49,7 @@
       margin: 0;
       background: #fff;
       color: var(--tinta);
-      font-family: "Inter Tight", ui-sans-serif, system-ui, "Helvetica Neue", Arial, sans-serif;
-      font-weight: 400;
+      font-family: var(--sans);
       -webkit-font-smoothing: antialiased;
     }
 
@@ -49,40 +71,36 @@
       padding: clamp(24px, 5vw, 64px);
     }
 
-    .arriba {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      gap: 16px;
-    }
-
     .eyebrow {
       margin: 0;
       font-size: 10px;
       letter-spacing: 0.45em;
       text-transform: uppercase;
-      color: var(--tinta-45);
+      color: var(--gris);
     }
 
-    .centro { max-width: 18em; }
+    .centro { max-width: 34em; }
 
-    h1 {
-      margin: 0 0 0.35em -0.05em;
-      font-size: clamp(4.5rem, 16vw, 12rem);
-      font-weight: 500;
-      letter-spacing: -0.05em;
-      line-height: 0.85;
+    .logo {
+      display: block;
+      width: clamp(260px, 36vw, 540px);
+      height: auto;
+      margin: 0 0 clamp(20px, 3vw, 36px) 0;
     }
 
     .estado {
       margin: 0;
-      font-size: clamp(0.95rem, 1.6vw, 1.15rem);
-      font-weight: 300;
-      letter-spacing: 0.01em;
-      color: var(--tinta-60);
+      text-shadow: 0 0 14px #fff, 0 0 4px #fff, 0 0 2px #fff;
+      font-family: var(--serif);
+      font-size: clamp(1.05rem, 2vw, 1.45rem);
+      font-weight: 400;
+      line-height: 1.45;
     }
 
-    .estado strong { font-weight: 400; color: var(--tinta); }
+    .estado em {
+      font-style: italic;
+      color: var(--gris);
+    }
 
     .abajo {
       display: flex;
@@ -91,18 +109,16 @@
       gap: 16px;
     }
 
-    .cafe {
-      margin: 0;
-      font-size: clamp(1.1rem, 2.4vw, 1.6rem);
-      font-weight: 400;
-      letter-spacing: -0.01em;
-    }
+    .cafe { margin: 0; }
 
     .cafe a {
+      font-family: var(--serif);
+      font-size: clamp(1.35rem, 2.8vw, 2rem);
+      font-weight: 400;
       color: inherit;
       text-decoration: none;
       border-bottom: 1px solid currentColor;
-      padding-bottom: 0.08em;
+      padding-bottom: 0.1em;
       transition: opacity 160ms ease;
     }
 
@@ -110,17 +126,17 @@
 
     .cafe .correo {
       display: block;
-      margin-top: 0.5em;
-      font-size: 0.68em;
-      font-weight: 300;
-      color: var(--tinta-60);
+      margin-top: 0.9em;
+      font-size: 0.8rem;
+      letter-spacing: 0.04em;
+      color: var(--gris);
     }
 
     .pie {
       margin: 0;
       font-size: 11px;
       letter-spacing: 0.08em;
-      color: var(--tinta-45);
+      color: var(--gris);
       text-align: right;
       white-space: nowrap;
     }
@@ -141,6 +157,7 @@
     }
 
     @media (max-width: 560px) {
+      .logo { width: min(78vw, 360px); }
       .abajo { flex-direction: column; align-items: flex-start; }
       .pie { text-align: left; }
     }
@@ -152,13 +169,12 @@
 
     <div class="contenido">
       <header class="arriba">
-        <p class="eyebrow">MALO</p>
         <p class="eyebrow">Estudio de arquitectura</p>
       </header>
 
       <section class="centro">
-        <h1>MALO</h1>
-        <p class="estado"><strong>Web en construcción.</strong> Mientras tanto, la obra sigue.</p>
+        <img class="logo" src="assets/logo-malo-negro.png" alt="MALO Architects" width="910" height="439">
+        <p class="estado">Web en construcción. <em>Mientras tanto, la obra sigue.</em></p>
       </section>
 
       <footer class="abajo">
@@ -167,7 +183,7 @@
           <a href="mailto:hola@estudiomalo.com">¿Tomamos un café?</a>
           <span class="correo">hola@estudiomalo.com</span>
         </p>
-        <p class="pie">© 2026 MALO</p>
+        <p class="pie">© 2026 MALO Architects</p>
       </footer>
     </div>
   </main>
