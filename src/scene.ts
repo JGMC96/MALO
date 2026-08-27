@@ -663,6 +663,68 @@ function materials(ink: Ink, full: boolean): void {
   ink.add(seg3([2.6, 0, 1.2], [1.4, 3.95, 0.15]), { t: 0.648, dur: 0.018, w: 0.9, a: 0.3, amp: 0.8 });
 }
 
+/* --- La valla de obra del estudio ---------------------------------------- */
+// Un plano vertical encarado a cámara, a la derecha del acopio de perfiles.
+const SIGN = (() => {
+  const c: V3 = [13.0, 0, 3.7];
+  const d = norm3([0.72, 0, -0.694]);
+  const half = 1.62;
+  return { A: add(c, mul3(d, -half)), B: add(c, mul3(d, half)), y0: 0.98, y1: 2.3 };
+})();
+const signAt = (p: V3, y: number): V3 => [p[0], y, p[2]];
+
+function signage(ink: Ink, full: boolean): void {
+  const { A, B, y0, y1 } = SIGN;
+  // Postes hincados, con un palmo por encima del tablero.
+  ink.add(seg3(signAt(A, 0), signAt(A, y1 + 0.22)), { t: 0.572, dur: 0.014, w: 1, a: 0.4, amp: 0.6 });
+  ink.add(seg3(signAt(B, 0), signAt(B, y1 + 0.22)), { t: 0.578, dur: 0.014, w: 1, a: 0.4, amp: 0.6 });
+  // El tablero.
+  ink.add(path3([signAt(A, y1), signAt(B, y1), signAt(B, y0), signAt(A, y0), signAt(A, y1)]), {
+    t: 0.588, dur: 0.03, w: 0.95, a: 0.42, amp: 0.6,
+  });
+  if (full) {
+    ink.add(seg3(signAt(A, y0), signAt(A, y1)), { t: 0.602, dur: 0.006, w: 0.7, a: 0.22, amp: 0.4 });
+  }
+}
+
+// El rótulo es la imagen del logo, proyectada sobre el plano del tablero.
+let SIGN_IMG: HTMLImageElement | null = null;
+
+/** URL del logo que rotula la valla; null la deja sin rótulo. */
+export function setSignLogo(url: string | null): void {
+  if (!url || typeof Image === "undefined") { SIGN_IMG = null; return; }
+  SIGN_IMG = new Image();
+  SIGN_IMG.src = url;
+}
+
+function signLogo(f: DynFrame): void {
+  const img = SIGN_IMG;
+  if (!img || !img.complete || !img.naturalWidth) return;
+  // Aparece cuando el tablero ya está trazado.
+  const a = clamp01((f.tau - 0.605) / 0.045) * 0.82 * f.mul;
+  if (a <= 0) return;
+  const { A, B, y0, y1 } = SIGN;
+  const iw = img.naturalWidth, ih = img.naturalHeight;
+  const dir = norm3(sub(B, A));
+  const c3 = mul3(add(A, B), 0.5);
+  const availW = Math.hypot(B[0] - A[0], B[2] - A[2]) - 0.44;
+  let h = (y1 - y0) - 0.3;
+  let w = (h * iw) / ih;
+  if (w > availW) { w = availW; h = (w * ih) / iw; }
+  const yMid = (y0 + y1) / 2;
+  const L = add(c3, mul3(dir, -w / 2));
+  const R = add(c3, mul3(dir, w / 2));
+  const TL = P([L[0], yMid + h / 2, L[2]]);
+  const TR = P([R[0], yMid + h / 2, R[2]]);
+  const BL = P([L[0], yMid - h / 2, L[2]]);
+  const { ctx } = f;
+  ctx.save();
+  ctx.globalAlpha = a;
+  ctx.transform((TR[0] - TL[0]) / iw, (TR[1] - TL[1]) / iw, (BL[0] - TL[0]) / ih, (BL[1] - TL[1]) / ih, TL[0], TL[1]);
+  ctx.drawImage(img, 0, 0);
+  ctx.restore();
+}
+
 function siteKit(ink: Ink, full: boolean): void {
   // Ladder up to the first slab, leaning near the right corner.
   const base: V3 = [1.6, 0, 1.7];
@@ -1148,6 +1210,7 @@ export function buildScene(detail: "full" | "lite" = "full"): Scene {
   craneStatic(ink, full);
   siteKit(ink, full);
   materials(ink, full);
+  signage(ink, full);
   notation(ink, full);
 
   return {
@@ -1156,6 +1219,7 @@ export function buildScene(detail: "full" | "lite" = "full"): Scene {
     dynamic: (f: DynFrame) => {
       craneDyn(f);
       figures(f);
+      signLogo(f);
     },
   };
 }
@@ -1166,12 +1230,12 @@ export function buildScene(detail: "full" | "lite" = "full"): Scene {
  */
 export function viewport(aspect: number): { w: number; cx: number; cy: number } {
   const wide = clamp01((aspect - 0.55) / 0.55);
-  const coreW = lerp(900, 1500, wide);
-  const coreH = lerp(960, 890, clamp01((aspect - 1.9) / 1.1));
+  const coreW = lerp(900, 1445, wide);
+  const coreH = lerp(960, 845, clamp01((aspect - 1.9) / 1.1));
   return {
     w: Math.max(coreW, coreH * aspect),
-    cx: lerp(950, 805, wide),
-    cy: lerp(465, 490, wide),
+    cx: lerp(980, 805, wide),
+    cy: lerp(465, 462, wide),
   };
 }
 

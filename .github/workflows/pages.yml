@@ -29,13 +29,13 @@ jobs:
       # Settings → Pages → Build and deployment → Source: GitHub Actions.
       - uses: actions/configure-pages@v5
 
-      # Solo lo que sirve la web: la portada, la marca y el vídeo de fondo.
+      # Solo lo que sirve la web: la portada, la marca y el motor del dibujo.
       - name: Reunir el sitio
         run: |
           mkdir -p _site
           cp index.html _site/
           cp -r assets _site/
-          cp -r media _site/
+          cp -r dist _site/
 
       - uses: actions/upload-pages-artifact@v3
         with:

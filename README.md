@@ -1,9 +1,11 @@
 # MALO Architects
 
 Web del estudio. Ahora mismo es una sola página en construcción —
-`index.html` — con el logo, el contacto y, de fondo, un vídeo de la obra
-dibujándose (con la valla del estudio en escena). La marca vive en `assets/` (logo, iconos, imagen para
-compartir y la Bodoni Moda autoalojada).
+`index.html` — con el logo, el contacto y, de fondo, la animación de la obra
+dibujándose que se describe más abajo, con la valla del estudio en escena
+(la rotula el propio logo, vía la opción `logo` del montaje). La marca vive
+en `assets/` (logo, iconos, imagen para compartir y la Bodoni Moda
+autoalojada).
 
 ## Publicar
 
@@ -44,8 +46,8 @@ dist/    architectural-site.js     versión compilada para HTML plano (sin React
 ejemplo/ index.html                hero de ejemplo en HTML plano (usa dist/)
          page.tsx                  página de previsualización para Next.js
 
-media/   dibujar-la-obra.mp4       el fondo de la web: un ciclo completo (40 s, bucle)
-         dibujar-la-obra-poster.jpg fotograma de portada mientras carga el vídeo
+media/   dibujar-la-obra.mp4       un ciclo completo en vídeo (40 s, bucle)
+         dibujar-la-obra-poster.jpg fotograma de la obra completa
 
 tools/   render-video.mjs          regenera el vídeo desde el código
 ```

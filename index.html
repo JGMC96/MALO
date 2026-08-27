@@ -91,20 +91,11 @@
       min-height: 220px;
     }
 
-    /* En absoluto para que el vídeo no arrastre la altura de la página. */
+    /* En absoluto para que el canvas no arrastre la altura de la página.
+       El dibujo decide su propio encuadre según la proporción de la caja. */
     .dibujo {
       position: absolute;
       inset: 0 var(--margen);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .dibujo video {
-      width: 100%;
-      height: 100%;
-      max-width: 1500px;
-      object-fit: contain;
     }
 
     .mensaje {
@@ -351,7 +342,6 @@
 
     @media (max-width: 620px) {
       .logo { width: min(80vw, 330px); }
-      .dibujo video { object-fit: cover; object-position: 56% center; }
       /* Deja sitio para que el botón fijo no pise la frase. */
       .mensaje { padding-bottom: 104px; }
       .panel { left: 18px; right: 18px; width: auto; }
@@ -365,10 +355,7 @@
     </header>
 
     <section class="lamina">
-      <div class="dibujo" aria-hidden="true">
-        <video src="media/dibujar-la-obra.mp4" poster="media/dibujar-la-obra-poster.jpg"
-               autoplay muted loop playsinline preload="auto" width="1664" height="1008"></video>
-      </div>
+      <div class="dibujo" id="fondo" aria-hidden="true"></div>
     </section>
 
     <section class="mensaje">
@@ -410,7 +397,13 @@
     </div>
   </div>
 
+  <script src="dist/architectural-site.js"></script>
   <script>
+    ArchitecturalSite.mount(document.getElementById("fondo"), {
+      intensity: 0.85,
+      logo: "assets/logo-malo-negro.png",
+    });
+
     (function () {
       const boton = document.getElementById("abrir");
       const panel = document.getElementById("panel");
@@ -420,43 +413,6 @@
       const titulo = document.getElementById("panel-titulo");
 
       const menosMovimiento = matchMedia("(prefers-reduced-motion: reduce)");
-
-      // El vídeo de fondo. Si el navegador no deja arrancarlo (iOS con
-      // ahorro de energía, navegadores dentro de apps), que al menos nunca
-      // se vea el papel en blanco del fotograma 0: se salta a la obra
-      // completa y se reintenta el arranque a la primera ocasión.
-      const video = document.querySelector(".dibujo video");
-      video.muted = true; // el autoplay exige silencio; la propiedad, no solo el atributo
-
-      const obraCompleta = () => {
-        const fijar = () => { try { video.currentTime = 36; } catch (e) {} };
-        if (video.readyState >= 1) fijar();
-        else video.addEventListener("loadedmetadata", fijar, { once: true });
-      };
-
-      if (menosMovimiento.matches) {
-        video.autoplay = false;
-        video.pause();
-        obraCompleta();
-      } else {
-        const arrancar = () => {
-          if (video.paused && !document.hidden) video.play().catch(() => {});
-        };
-        arrancar();
-        // En cuanto haya datos: si sigue parado, enseña la obra completa
-        // (no la hoja vacía) y prueba a arrancar otra vez.
-        video.addEventListener("loadeddata", () => {
-          if (video.paused) { obraCompleta(); arrancar(); }
-        }, { once: true });
-        video.addEventListener("canplay", arrancar, { once: true });
-        // Y al primer gesto del visitante, del tipo que sea.
-        for (const ev of ["pointerdown", "touchstart", "keydown", "scroll"]) {
-          document.addEventListener(ev, arrancar, { once: true, passive: true });
-        }
-        document.addEventListener("visibilitychange", () => {
-          if (document.hidden) video.pause(); else arrancar();
-        });
-      }
 
       const estaAbierto = () => panel.classList.contains("abierto");
 
