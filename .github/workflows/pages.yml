@@ -2,7 +2,8 @@ name: Publicar la web
 
 on:
   push:
-    branches: [main]
+    # Rama por defecto del repo hoy, y main por si más adelante se renombra.
+    branches: [claude/new-session-jquuf0, main]
   workflow_dispatch:
 
 permissions:
