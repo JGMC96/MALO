@@ -1,0 +1,1030 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>MALO · Arquitectos</title>
+  <meta name="description" content="MALO Arquitectos — Web en construcción. Mientras tanto, la obra sigue.">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png">
+  <link rel="apple-touch-icon" href="/apple-touch-icon-180.png">
+  <link rel="alternate icon" type="image/png" sizes="48x48" href="/favicon-48.png">
+  <meta property="og:title" content="MALO · Arquitectos">
+  <meta property="og:description" content="MALO Arquitectos — Web en construcción. Mientras tanto, la obra sigue.">
+  <meta property="og:image" content="/og-image-1200x630.png">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="MALO · Arquitectos">
+  <meta name="twitter:description" content="MALO Arquitectos — Web en construcción. Mientras tanto, la obra sigue.">
+  <meta name="twitter:image" content="/og-image-1200x630.png">
+  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400;6..96,500&display=swap" rel="stylesheet">
+  <meta name="theme-color" content="#111111">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;            /* no scroll */
+      overscroll-behavior: none;
+      background: #E5E3E1;         /* color dominante del vídeo: sin costura al cargar */
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    }
+
+    .hero {
+      position: relative;
+      height: 100vh;
+      height: 100svh;
+      min-height: 100dvh;          /* pantalla completa, segura en movil */
+      width: 100vw;
+      overflow: hidden;
+      background: #E5E3E1;         /* poster del mismo tono: cero parpadeo */
+      isolation: isolate;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      background:
+        linear-gradient(180deg, rgba(229,227,225,.24) 0%, rgba(229,227,225,0) 32%),
+        linear-gradient(0deg, rgba(229,227,225,.28) 0%, rgba(229,227,225,0) 38%);
+    }
+
+    .bg-video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;         /* muestra siempre el encuadre completo */
+      object-position: center center;
+      transform: none;
+      z-index: 0;
+      opacity: 0;
+      transition: opacity .6s ease, transform .8s ease;
+      will-change: opacity, transform;
+      background: #E5E3E1;
+    }
+
+    .bg-video.is-ready {
+      opacity: 1;
+    }
+
+    .layer {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      padding: clamp(16px, 4vw, 48px);
+      display: flex;
+      pointer-events: none;
+    }
+
+    /* Logo — arriba a la izquierda */
+    .brand {
+      position: absolute;
+      top: clamp(16px, 4vw, 48px);
+      left: clamp(16px, 4vw, 48px);
+      z-index: 3;
+    }
+    .brand img {
+      display: block;
+      width: clamp(120px, 18vw, 220px);
+      height: auto;
+    }
+    .brand .logo-light { display: none; }
+
+    /* Copys — abajo a la izquierda, tamaño hero (sin overlay general) */
+    .copy {
+      position: absolute;
+      bottom: clamp(16px, 5vh, 56px);
+      left: clamp(16px, 4vw, 48px);
+      z-index: 3;
+      max-width: min(46rem, 92vw);
+    }
+    .copy .line1 {
+      font-size: clamp(30px, 6vw, 78px);
+      font-weight: 700;
+      line-height: 1.08;
+      letter-spacing: 0;
+      font-family: 'Bodoni Moda', Georgia, serif;
+      color: #111;
+      min-height: 1.1em;            /* evita salto de layout durante la animación */
+      /* línea 1: sin fondo, directo sobre el vídeo */
+      text-shadow: 0 1px 2px rgba(255,255,255,.95), 0 0 1px rgba(17,17,17,.18);
+    }
+    .copy .line2 {
+      margin-top: .35em;
+      font-size: clamp(19px, 3.2vw, 42px);
+      font-weight: 500;
+      line-height: 1.15;
+      letter-spacing: 0;
+      font-family: 'Bodoni Moda', Georgia, serif;
+      color: rgba(17,17,17,.88);
+      min-height: 1.2em;
+    }
+    /* pill de contraste SOLO en la línea 2, ceñida al texto: sin texto no hay caja visible */
+    .copy .line2 .txt {
+      display: inline-block;
+      max-width: 100%;
+      background: rgba(255,255,255,.55);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-radius: 10px;
+      padding: .12em .35em;
+      text-shadow: 0 1px 2px rgba(255,255,255,.95);
+    }
+
+    /* Cursor typewriter */
+    .cursor {
+      display: none;
+      font-weight: 400;
+      color: #111;
+      animation: blink 1s steps(1) infinite;
+    }
+    .cursor.typing { display: inline; }
+    @keyframes blink { 50% { opacity: 0; } }
+    .writing-dots {
+      display: inline-flex;
+      gap: .12em;
+      margin-left: .12em;
+      vertical-align: baseline;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity .35s ease, visibility 0s linear .35s;
+    }
+    .writing-dots.visible { opacity: 1; visibility: visible; transition-delay: 0s; }
+    .writing-dots i {
+      display: block;
+      width: .2em;
+      height: .2em;
+      border-radius: 50%;
+      background: currentColor;
+      opacity: .28;
+      animation: writingDot 1.2s ease-in-out infinite;
+    }
+    .writing-dots i:nth-child(2) { animation-delay: .18s; }
+    .writing-dots i:nth-child(3) { animation-delay: .36s; }
+    @keyframes writingDot {
+      0%, 60%, 100% { opacity: .24; transform: translateY(0); }
+      30% { opacity: .9; transform: translateY(-.16em); }
+    }
+
+
+
+    .sound-toggle {
+      position: absolute;
+      top: calc(clamp(16px, 4vw, 48px) + 88px);
+      right: clamp(16px, 4vw, 48px);
+      z-index: 3;
+      width: 30px;
+      height: 30px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      appearance: none;
+      border: 1px solid rgba(17,17,17,.22);
+      border-radius: 50%;
+      color: rgba(17,17,17,.66);
+      background: rgba(255,255,255,.48);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      cursor: pointer;
+      pointer-events: auto;
+    }
+    .sound-toggle:hover, .sound-toggle:focus-visible, .sound-toggle.is-on { color: #111; background: rgba(255,255,255,.82); border-color: rgba(17,17,17,.5); outline: none; }
+    .sound-toggle svg { width: 15px; height: 15px; fill: currentColor; }
+    .sound-toggle svg path.sound-wave { fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; }
+    .sound-toggle:not(.is-on) .sound-wave { opacity: 0; }
+
+    /* Selector de idioma — arriba a la derecha, discreto */
+    .lang {
+      position: absolute;
+      top: clamp(16px, 4vw, 48px);
+      right: clamp(16px, 4vw, 48px);
+      z-index: 3;
+      display: flex;
+      gap: .1em;
+      padding: .2em;
+      border-radius: 999px;
+      background: rgba(255,255,255,.48);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      border: 1px solid rgba(17,17,17,.22);
+      transition: background .2s ease, border-color .2s ease;
+    }
+    .lang:not(.open) button:not(.active) { display: none; }
+    .lang button {
+      pointer-events: auto;
+      appearance: none;
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+      font: 600 10px/1 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      letter-spacing: .08em;
+      color: rgba(17,17,17,.62);
+      min-width: 29px;
+      min-height: 29px;
+      padding: .35em .52em;
+      border-radius: 999px;
+      transition: color .2s ease, background .2s ease;
+    }
+    .lang button.active {
+      color: rgba(17,17,17,.72);
+      background: transparent;
+    }
+    .lang.open {
+      background: rgba(255,255,255,.78);
+      border-color: rgba(17,17,17,.35);
+    }
+    .lang.open button.active {
+      color: #fff;
+      background: #111;
+    }
+    .lang button:focus-visible {
+      outline: 2px solid rgba(17,17,17,.7);
+      outline-offset: 2px;
+    }
+    /* Fallback: si el navegador no soporta backdrop-filter (Safari viejo),
+       sube la opacidad del fondo para conservar legibilidad sin blur */
+    @supports not ((backdrop-filter: blur(2px)) or (-webkit-backdrop-filter: blur(2px))) {
+      .lang { background: rgba(255,255,255,.92); }
+      .contact a { background: rgba(255,255,255,.95); }
+      .copy .line2 .txt { background: rgba(255,255,255,.85); }
+      .modal { background: rgba(17,17,17,.6); }
+    }
+
+    /* Botón — abajo a la derecha */
+    .socials {
+      position: absolute;
+      top: calc(clamp(16px, 4vw, 48px) + 52px);
+      right: clamp(16px, 4vw, 48px);
+      z-index: 3;
+      display: flex;
+      gap: .3rem;
+      pointer-events: auto;
+    }
+    .socials a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 30px;
+      height: 30px;
+      border: 1px solid rgba(17,17,17,.22);
+      border-radius: 50%;
+      color: rgba(17,17,17,.66);
+      background: rgba(255,255,255,.48);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      text-decoration: none;
+      transition: background .2s ease, color .2s ease, border-color .2s ease;
+    }
+    .socials a:hover,
+    .socials a:focus-visible {
+      color: #111;
+      background: rgba(255,255,255,.82);
+      border-color: rgba(17,17,17,.5);
+      outline: none;
+    }
+    .socials svg {
+      display: block;
+      width: 15px;
+      height: 15px;
+      fill: currentColor;
+    }
+    .socials svg.instagram-icon {
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+    }
+    .contact {
+      position: absolute;
+      bottom: clamp(16px, 4vw, 48px);
+      right: clamp(16px, 4vw, 48px);
+      z-index: 3;
+    }
+    .contact a {
+      display: inline-block;
+      pointer-events: auto;
+      font-size: clamp(14px, 1.6vw, 17px);
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #111;
+      text-decoration: none;
+      background: rgba(255,255,255,.82);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      border: 1px solid rgba(17,17,17,.75);
+      padding: .8em 1.7em;
+      border-radius: 999px;
+      transition: background .25s ease, color .25s ease, transform .25s ease, opacity .8s ease;
+      opacity: 0;                    /* fade-in tras el typewriter */
+      transform: translateY(8px);
+    }
+    .contact a.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .contact a:hover { background: #111; color: #fff; }
+    .contact a:active { background: #111; color: #fff; }
+
+    /* ===== Formulario de contacto (modal interno) ===== */
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: clamp(16px, 4vw, 48px);
+      background: rgba(17,17,17,.45);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .3s ease;
+    }
+    .modal.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .modal-card {
+      position: relative;
+      width: min(26rem, 100%);
+      background: #fff;
+      border-radius: 16px;
+      padding: clamp(24px, 4vw, 36px);
+      box-shadow: 0 24px 64px rgba(17,17,17,.35);
+      transform: translateY(12px) scale(.98);
+      transition: transform .3s ease;
+    }
+    .modal.open .modal-card { transform: translateY(0) scale(1); }
+    .modal-close {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      appearance: none;
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+      font-size: 22px;
+      line-height: 1;
+      color: rgba(17,17,17,.55);
+      padding: 6px;
+    }
+
+      font-family: 'Bodoni Moda', Georgia, serif;
+      color: #111;
+      margin-bottom: .4em;
+    }
+    .modal-card .subtitle {
+      font-size: 14px;
+      color: rgba(17,17,17,.65);
+      margin-bottom: 1.4em;
+    }
+    .field { margin-bottom: 1.1em; }
+    .field label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: rgba(17,17,17,.6);
+      margin-bottom: .45em;
+    }
+    .field input,
+    .field textarea {
+      width: 100%;
+      border: 1px solid rgba(17,17,17,.25);
+      border-radius: 10px;
+      padding: .8em .9em;
+      font: 400 16px/1.4 "Helvetica Neue", Helvetica, Arial, sans-serif; /* 16px: sin zoom iOS */
+      color: #111;
+      background: #fff;
+      transition: border-color .2s ease;
+    }
+    .field input:focus,
+    .field textarea:focus {
+      outline: none;
+      border-color: #111;
+    }
+    .field textarea { min-height: 96px; resize: vertical; }
+    .field .error {
+      display: none;
+      font-size: 12px;
+      color: #b3261e;
+      margin-top: .35em;
+    }
+    .field.invalid .error { display: block; }
+    .field.invalid input,
+    .field.invalid textarea { border-color: #b3261e; }
+    .hp {
+      position: absolute;
+      left: -9999px;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+    }
+    .submit-btn {
+      width: 100%;
+      appearance: none;
+      border: 0;
+      cursor: pointer;
+      background: #111;
+      color: #fff;
+      font: 600 15px/1 "Helvetica Neue", Helvetica, Arial, sans-serif;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      padding: .95em 1em;
+      border-radius: 999px;
+      transition: background .2s ease, opacity .2s ease;
+    }
+    .submit-btn:hover:not(:disabled) { background: #000; }
+    .submit-btn:disabled { opacity: .55; cursor: wait; }
+    .form-status {
+      display: none;
+      margin-top: 1em;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+    .form-status.sending { display: block; color: rgba(17,17,17,.65); }
+    .form-status.ok { display: block; color: #1e7a35; }
+    .form-status.err { display: block; color: #b3261e; }
+
+    /* ===== Mobile: encuadre especifico, controles seguros y efectos estables ===== */
+    @media (max-width: 768px) {
+      html, body {
+        width: 100%;
+        min-height: 100%;
+        background: #E5E3E1;
+      }
+      .hero {
+        min-height: 100svh;
+        min-height: 100dvh;
+        background: #E5E3E1;
+      }
+      .hero::after {
+        background:
+          linear-gradient(180deg, rgba(229,227,225,.42) 0%, rgba(229,227,225,.08) 34%, rgba(229,227,225,0) 52%),
+          linear-gradient(0deg, rgba(229,227,225,.58) 0%, rgba(229,227,225,.16) 31%, rgba(229,227,225,0) 58%);
+      }
+      .brand .logo-dark { display: block; }
+      .brand {
+        top: max(18px, env(safe-area-inset-top));
+        left: max(18px, env(safe-area-inset-left));
+      }
+      .brand img { width: clamp(112px, 38vw, 156px); }
+      .lang {
+        top: max(16px, env(safe-area-inset-top));
+        right: max(14px, env(safe-area-inset-right));
+      }
+      .lang button {
+        min-width: 28px;
+        min-height: 28px;
+        font-size: 9px;
+        padding: .32em .48em;
+      }
+      .socials {
+        top: calc(max(16px, env(safe-area-inset-top)) + 48px);
+        right: max(14px, env(safe-area-inset-right));
+        gap: .25rem;
+      }
+      .socials a {
+        width: 27px;
+        height: 27px;
+      }
+      .socials svg {
+        width: 13px;
+        height: 13px;
+      }
+      .copy {
+        left: max(18px, env(safe-area-inset-left));
+        right: max(18px, env(safe-area-inset-right));
+        bottom: calc(max(18px, env(safe-area-inset-bottom)) + 84px);
+        max-width: none;
+      }
+      .copy .line1 {
+        font-size: clamp(32px, 10.8vw, 48px);
+        line-height: 1.04;
+        color: #111;
+        text-shadow: 0 1px 2px rgba(255,255,255,.98), 0 0 12px rgba(255,255,255,.55);
+      }
+      .copy .line2 {
+        margin-top: .48em;
+        font-size: clamp(18px, 5.7vw, 28px);
+        line-height: 1.13;
+        color: rgba(17,17,17,.75);
+        text-shadow: 0 1px 2px rgba(255,255,255,.95);
+      }
+      .copy .line2 .txt {
+        padding: .12em .34em .16em;
+        border-radius: 8px;
+        background: rgba(255,255,255,.68);
+      }
+      .bg-video {
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        transform: none;
+        object-fit: contain;
+        object-position: center center;
+      }
+      .hero.is-portrait .bg-video { object-position: center center; }
+      .hero.is-landscape .bg-video { object-position: center center; }
+      .hero.is-short .bg-video { object-position: center center; }
+      .contact {
+        left: auto;
+        right: max(18px, env(safe-area-inset-right));
+        bottom: max(18px, env(safe-area-inset-bottom));
+        width: auto;
+      }
+      .contact a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: auto;
+        min-height: 40px;
+        background: rgba(255,255,255,.9);
+        color: #111;
+        border-color: rgba(17,17,17,.75);
+        font-size: 12px;
+        padding: .62em .9em;
+      }
+      .contact a:hover,
+      .contact a:active { background: #111; color: #fff; }
+      .modal {
+        align-items: flex-end;
+        padding: max(14px, env(safe-area-inset-top)) max(14px, env(safe-area-inset-right)) max(14px, env(safe-area-inset-bottom)) max(14px, env(safe-area-inset-left));
+      }
+      .modal-card {
+        width: 100%;
+        max-height: calc(100svh - 28px);
+        overflow: auto;
+        border-radius: 18px;
+        padding: 28px 22px 22px;
+      }
+      .field { margin-bottom: .9em; }
+      .field textarea { min-height: 86px; }
+    }
+
+    @media (min-width: 600px) and (max-width: 768px) {
+      .copy {
+        right: 288px;
+        bottom: max(34px, env(safe-area-inset-bottom));
+        max-width: 420px;
+      }
+      .contact {
+        left: auto;
+        width: auto;
+      }
+      .contact a { width: auto; min-height: 42px; padding: .65em .95em; font-size: 13px; }
+    }
+
+    @media (max-width: 1024px) and (max-height: 500px) {
+      .bg-video {
+        transform: none;
+        object-fit: contain;
+        object-position: center center;
+      }
+      .brand {
+        top: max(18px, env(safe-area-inset-top));
+        left: max(18px, env(safe-area-inset-left));
+      }
+      .brand img { width: clamp(92px, 18vw, 132px); }
+      .lang {
+        top: max(16px, env(safe-area-inset-top));
+        right: max(14px, env(safe-area-inset-right));
+      }
+      .lang button {
+        min-width: 28px;
+        min-height: 28px;
+        font-size: 9px;
+        padding: .32em .48em;
+      }
+      .socials {
+        top: calc(max(16px, env(safe-area-inset-top)) + 48px);
+        right: max(14px, env(safe-area-inset-right));
+        gap: .25rem;
+      }
+      .socials a {
+        width: 27px;
+        height: 27px;
+      }
+      .socials svg {
+        width: 13px;
+        height: 13px;
+      }
+      .copy {
+        left: max(18px, env(safe-area-inset-left));
+        bottom: max(18px, env(safe-area-inset-bottom));
+        max-width: min(56vw, 430px);
+      }
+      .copy .line1 { font-size: clamp(25px, 5.2vw, 42px); line-height: 1.02; }
+      .copy .line2 { font-size: clamp(16px, 3vw, 24px); margin-top: .4em; }
+      .contact {
+        left: auto;
+        right: max(18px, env(safe-area-inset-right));
+        bottom: max(18px, env(safe-area-inset-bottom));
+        width: auto;
+      }
+      .contact a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: auto;
+        min-height: 40px;
+        padding: .62em .9em;
+        font-size: 12px;
+      }
+    }
+
+    @media (max-width: 420px) and (min-height: 760px) {
+      .copy { bottom: calc(max(18px, env(safe-area-inset-bottom)) + 94px); }
+      .copy .line1 { font-size: clamp(34px, 11.5vw, 50px); }
+    }
+
+    @media (max-width: 768px) and (max-height: 640px) {
+      .brand img { width: clamp(96px, 30vw, 128px); }
+      .copy { bottom: calc(max(14px, env(safe-area-inset-bottom)) + 68px); }
+      .copy .line1 { font-size: clamp(26px, 8.8vw, 38px); }
+      .copy .line2 { font-size: clamp(16px, 4.8vw, 22px); }
+      .contact a { min-height: 40px; padding: .62em .9em; }
+    }
+
+    @media (min-width: 769px) and (max-width: 1180px) {
+      .bg-video {
+        transform: none;
+        object-position: center center;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .bg-video,
+      .contact a,
+      .modal,
+      .modal-card,
+      .lang button { transition: none; }
+      .cursor { animation: none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="hero">
+    <video class="bg-video" autoplay loop playsinline preload="metadata" disablepictureinpicture poster="/poster.jpg" data-mobile-src="/video-with-audio.mp4" data-desktop-src="/video-with-audio.mp4"></video>
+    <button type="button" class="sound-toggle" aria-label="Mute video" aria-pressed="true">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z"></path><path class="sound-wave" d="M16 9.5a4 4 0 0 1 0 5M18.5 7a7.5 7.5 0 0 1 0 10"></path></svg>
+    </button>
+
+    <header class="brand">
+      <img class="logo-light" src="/logo-malo-blanco.png" alt="MALO Arquitectos">
+      <img class="logo-dark" src="/logo-malo-negro.png" alt="MALO Arquitectos">
+    </header>
+
+    <section class="copy">
+      <p class="line1"><span class="txt" data-i18n="line1"></span><span class="cursor" aria-hidden="true">|</span></p>
+      <p class="line2"><span class="txt" data-i18n="line2"></span><span class="cursor" aria-hidden="true">|</span><span class="writing-dots" aria-hidden="true"><i></i><i></i><i></i></span></p>
+    </section>
+
+    <nav class="lang" aria-label="Language" aria-haspopup="true" aria-expanded="false">
+      <button type="button" data-lang="en" class="active">EN</button>
+      <button type="button" data-lang="es">ES</button>
+    </nav>
+
+
+    <nav class="socials" aria-label="Social media">
+      <a href="https://www.instagram.com/" target="_blank" rel="noreferrer" aria-label="Instagram">
+        <svg class="social-icon instagram-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.2" y="3.2" width="17.6" height="17.6" rx="5"></rect><circle cx="12" cy="12" r="4.1"></circle><circle cx="17.5" cy="6.5" r="1.1" fill="currentColor" stroke="none"></circle></svg>
+      </a>
+      <a href="https://www.linkedin.com/" target="_blank" rel="noreferrer" aria-label="LinkedIn">
+        <svg class="social-icon linkedin-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.34V8.99h3.41v1.56h.05c.47-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.46v6.29zM5.32 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.1 20.45H3.54V8.99H7.1v11.46z"></path></svg>
+      </a>
+    </nav>
+
+    <nav class="contact">
+      <a href="#contact-form">Contact</a>
+    </nav>
+
+    <!-- Formulario interno (modal) -->
+    <div class="modal" id="contact-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <div class="modal-card">
+        <button type="button" class="modal-close" data-i18n-aria="close" aria-label="Cerrar">×</button>
+        <h2 id="modal-title" data-i18n="modalTitle">Escríbenos</h2>
+        <p class="subtitle" data-i18n="modalSubtitle">Cuéntanos tu proyecto y te respondemos a la brevedad.</p>
+        <form id="contact-form" novalidate>
+          <div class="field">
+            <label for="f-name" data-i18n="name">Nombre</label>
+            <input id="f-name" name="name" type="text" autocomplete="name" required>
+            <span class="error">Dinos tu nombre.</span>
+          </div>
+          <div class="field">
+            <label for="f-email" data-i18n="email">Email</label>
+            <input id="f-email" name="email" type="email" autocomplete="email" required>
+            <span class="error">Necesitamos un email válido.</span>
+          </div>
+          <div class="field">
+            <label for="f-msg" data-i18n="message">Mensaje</label>
+            <textarea id="f-msg" name="message" required></textarea>
+            <span class="error">Cuéntanos algo de tu proyecto.</span>
+          </div>
+          <!-- honeypot anti-spam: invisible para humanos, tentador para bots -->
+          <div class="hp" aria-hidden="true">
+            <label for="f-company">Company</label>
+            <input id="f-company" name="company" type="text" tabindex="-1" autocomplete="off">
+          </div>
+          <button type="submit" class="submit-btn" data-i18n="send">Enviar</button>
+          <p class="form-status" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // Video hero: seleccion fiable del asset movil y autoplay estable en iOS/Android.
+    (function heroVideo() {
+      const heroEl = document.querySelector('.hero');
+      const v = document.querySelector('.bg-video');
+      const mobileQuery = window.matchMedia('(max-width: 768px), (pointer: coarse) and (max-width: 1024px)');
+      let currentSrc = '';
+      let resizeTimer = null;
+
+      function setViewportClasses() {
+        const portrait = window.innerHeight >= window.innerWidth;
+        heroEl.classList.toggle('is-portrait', portrait);
+        heroEl.classList.toggle('is-landscape', !portrait);
+        heroEl.classList.toggle('is-short', window.innerHeight <= 640);
+      }
+
+      function desiredSrc() {
+        return mobileQuery.matches ? v.dataset.mobileSrc : v.dataset.desktopSrc;
+      }
+
+      function tryPlay() {
+        const playPromise = v.play();
+        if (playPromise && typeof playPromise.catch === 'function') playPromise.catch(() => { if (!v.muted) { v.muted = true; document.dispatchEvent(new Event('malo:video-muted')); } });
+      }
+
+      function loadVideo() {
+        const nextSrc = desiredSrc();
+        setViewportClasses();
+        if (nextSrc === currentSrc) {
+          tryPlay();
+          return;
+        }
+        currentSrc = nextSrc;
+        v.classList.remove('is-ready');
+        v.muted = false;
+        v.src = nextSrc;
+        v.load();
+        tryPlay();
+      }
+
+      v.addEventListener('loadeddata', () => v.classList.add('is-ready'));
+      v.addEventListener('canplay', tryPlay);
+      v.addEventListener('error', () => v.classList.add('is-ready'));
+      document.addEventListener('visibilitychange', () => { if (!document.hidden) tryPlay(); });
+      window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(loadVideo, 120);
+      }, { passive: true });
+      window.addEventListener('orientationchange', () => setTimeout(loadVideo, 240));
+      if (typeof mobileQuery.addEventListener === 'function') {
+        mobileQuery.addEventListener('change', loadVideo);
+      } else if (typeof mobileQuery.addListener === 'function') {
+        mobileQuery.addListener(loadVideo);
+      }
+      loadVideo();
+    })();
+
+    // Audio bajo demanda: intenta autoplay sonoro y se adapta a las politicas del navegador.
+    (function videoSound() {
+      const v = document.querySelector(".bg-video");
+      const toggle = document.querySelector(".sound-toggle");
+      function render() {
+        const spanish = document.documentElement.lang === "es";
+        const enabled = !v.muted;
+        toggle.classList.toggle("is-on", enabled);
+        toggle.setAttribute("aria-pressed", String(enabled));
+        toggle.setAttribute("aria-label", enabled ? (spanish ? "Silenciar video" : "Mute video") : (spanish ? "Activar sonido" : "Activate sound"));
+      }
+      function tryPlay() {
+        const playPromise = v.play();
+        if (playPromise && typeof playPromise.catch === "function") playPromise.catch(() => { v.muted = true; render(); v.play().catch(() => {}); });
+      }
+      toggle.addEventListener("click", () => { v.muted = !v.muted; if (!v.muted) tryPlay(); render(); });
+      function activateOnFirstInteraction(e) {
+        if (e.target.closest(".sound-toggle")) return;
+        document.removeEventListener("pointerdown", activateOnFirstInteraction);
+        v.muted = false;
+        tryPlay();
+        render();
+      }
+      document.addEventListener("pointerdown", activateOnFirstInteraction);
+      document.addEventListener("malo:language", render);
+      document.addEventListener("malo:video-muted", render);
+      render();
+    })();
+    // Formulario interno: modal + fetch AJAX (nunca sale de la página)
+    (function contactForm() {
+      const modal = document.getElementById('contact-modal');
+      const openers = [...document.querySelectorAll('.contact a')];
+      const closeBtn = modal.querySelector('.modal-close');
+      const form = document.getElementById('contact-form');
+      const status = form.querySelector('.form-status');
+      const submitBtn = form.querySelector('.submit-btn');
+      const modalTitle = document.getElementById('modal-title');
+      const modalSubtitle = modal.querySelector('.subtitle');
+      const fieldLabels = [...form.querySelectorAll('.field label')];
+      const fieldErrors = [...form.querySelectorAll('.field .error')];
+      let locale = { sending: 'Sending...', sent: 'Sent. We will reply shortly.', failed: 'Could not send. Please try again or email hola@malo.works' };
+      const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+      function open() { modal.classList.add('open'); }
+      function close() { modal.classList.remove('open'); }
+      openers.forEach(a => a.addEventListener('click', e => { e.preventDefault(); open(); }));
+      closeBtn.addEventListener('click', close);
+      modal.addEventListener('click', e => { if (e.target === modal) close(); });
+      document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+
+      function applyLanguage(t) {
+        locale = t.form;
+        modalTitle.textContent = locale.title;
+        modalSubtitle.textContent = locale.subtitle;
+        closeBtn.setAttribute('aria-label', locale.close);
+        fieldLabels.forEach((label, i) => { label.textContent = [locale.name, locale.email, locale.message][i]; });
+        fieldErrors.forEach((error, i) => { error.textContent = locale.errors[i]; });
+        submitBtn.textContent = locale.send;
+        if (status.classList.contains('sending')) status.textContent = locale.sending;
+        if (status.classList.contains('ok')) status.textContent = locale.sent;
+        if (status.classList.contains('err')) status.textContent = locale.failed;
+      }
+
+      document.addEventListener('malo:language', e => applyLanguage(e.detail));
+
+      function validate() {
+        let ok = true;
+        form.querySelectorAll('.field').forEach(f => {
+          const input = f.querySelector('input,textarea');
+          const valid = input.name === 'email'
+            ? EMAIL_RE.test(input.value.trim())
+            : input.value.trim().length >= 2;
+          f.classList.toggle('invalid', !valid);
+          if (!valid) ok = false;
+        });
+        return ok;
+      }
+      form.querySelectorAll('input,textarea').forEach(i =>
+        i.addEventListener('input', () => i.closest('.field').classList.remove('invalid')));
+
+      function setStatus(mode, msg) {
+        status.className = 'form-status ' + mode;
+        status.textContent = msg;
+      }
+
+      form.addEventListener('submit', async e => {
+        e.preventDefault();
+        if (form.company.value) return;          // honeypot: bot detectado, fingir éxito
+        if (!validate()) return;
+
+        submitBtn.disabled = true;
+        setStatus('sending', locale.sending);
+        try {
+          const res = await fetch('/api/contact', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              name: form.name.value.trim(),
+              email: form.email.value.trim(),
+              message: form.message.value.trim()
+            })
+          });
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          setStatus('ok', locale.sent);
+          form.reset();
+
+        } catch (err) {
+          setStatus('err', locale.failed);
+        } finally {
+          submitBtn.disabled = false;
+        }
+      });
+    })();
+
+    // Typewriter + idioma — natural timing, respeta prefers-reduced-motion
+    (function hero() {
+      const I18N = {
+        en: {
+          line1: 'Crafting...',
+          line2: 'The work never stops.',
+          contact: 'Contact',
+          form: { title: 'Get in touch', subtitle: 'Tell us about your project and we will get back to you shortly.', close: 'Close', name: 'Name', email: 'Email', message: 'Message', errors: ['Please tell us your name.', 'Please enter a valid email.', 'Tell us a little about your project.'], send: 'Send', sending: 'Sending...', sent: 'Sent. We will reply shortly.', failed: 'Could not send. Please try again or email hola@malo.works' }
+        },
+        es: {
+          line1: 'Crafting...',
+          line2: 'La obra no se detiene.',
+          contact: 'Contacto',
+          form: { title: 'Escríbenos', subtitle: 'Cuéntanos tu proyecto y te responderemos en breve.', close: 'Cerrar', name: 'Nombre', email: 'Correo electrónico', message: 'Mensaje', errors: ['Dinos tu nombre.', 'Necesitamos un correo electrónico válido.', 'Cuéntanos algo de tu proyecto.'], send: 'Enviar', sending: 'Enviando...', sent: 'Enviado. Te responderemos muy pronto.', failed: 'No se pudo enviar. Inténtalo de nuevo o escribe a hola@malo.works' }
+        }
+      };
+      const lines = [...document.querySelectorAll('.copy .txt')];
+      const cursors = [...document.querySelectorAll('.copy .cursor')];
+      const writingDots = document.querySelector('.writing-dots');
+      const contactLink = document.querySelector('.contact a');
+      const langBtns = [...document.querySelectorAll('.lang button')];
+      const langNav = document.querySelector('.lang');
+      let timer = null;
+      let lang = 'en'; // inglés por defecto
+
+      function showInstant(t) {
+        // Sin animación (reduced motion): texto directo + contacto visible
+        clearTimeout(timer);
+        lines.forEach((el, i) => {
+          el.textContent = t[['line1','line2'][i]];
+          el.nextElementSibling.classList.remove('typing');
+        });
+        contactLink.textContent = t.contact;
+        contactLink.classList.add('visible');
+      }
+
+      function typeSequence(t) {
+        clearTimeout(timer);
+        lines.forEach(el => el.textContent = '');
+        writingDots.classList.remove('visible');
+        contactLink.classList.remove('visible');   // compite menos con la animación
+        contactLink.textContent = t.contact;
+        const full = [t.line1, t.line2];
+        const base = 55, jitter = 40, pauseBetweenLines = 550;
+        let li = 0;
+
+        (function typeLine() {
+          const txt = full[li], el = lines[li], cur = cursors[li];
+          cur.classList.add('typing');
+          let ci = 0;
+          (function step() {
+            el.textContent = txt.slice(0, ++ci);
+            if (ci < txt.length) {
+              const extra = /[.,:]/.test(txt[ci-1]) ? 260 : 0;
+              timer = setTimeout(step, base + Math.random() * jitter + extra);
+            } else {
+              cur.classList.remove('typing');
+              li++;
+              if (li < full.length) {
+                timer = setTimeout(typeLine, pauseBetweenLines);
+              } else {
+                writingDots.classList.add('visible');
+                contactLink.classList.add('visible'); // fade-in al terminar
+              }
+            }
+          })();
+        })();
+      }
+
+      function setLang(next, animate) {
+        lang = next;
+        document.documentElement.lang = next === 'es' ? 'es' : 'en';
+        const t = I18N[next];
+        langBtns.forEach(b => b.classList.toggle('active', b.dataset.lang === next));
+        langNav.classList.remove('open');
+        langNav.setAttribute('aria-expanded', 'false');
+        document.dispatchEvent(new CustomEvent('malo:language', { detail: t }));
+        if (animate) typeSequence(t);
+        else showInstant(t);
+      }
+
+      langNav.addEventListener('click', e => {
+        const button = e.target.closest('button');
+        if (!button) return;
+        if (button.dataset.lang === lang) {
+          const open = !langNav.classList.contains('open');
+          langNav.classList.toggle('open', open);
+          langNav.setAttribute('aria-expanded', String(open));
+        } else {
+          setLang(button.dataset.lang, true);
+        }
+      });
+
+      document.addEventListener('click', e => {
+        if (!langNav.contains(e.target)) {
+          langNav.classList.remove('open');
+          langNav.setAttribute('aria-expanded', 'false');
+        }
+      });
+
+      document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') {
+          langNav.classList.remove('open');
+          langNav.setAttribute('aria-expanded', 'false');
+        }
+      });
+
+
+      // Primera carga: inglés + animación
+      setLang('en', true);
+    })();
+  </script>
+  </body>
+</html>
