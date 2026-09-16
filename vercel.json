@@ -1,4 +1,17 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "cleanUrls": true
+  "cleanUrls": true,
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "malo.works"
+        }
+      ],
+      "destination": "https://www.malo.works/:path*",
+      "permanent": true
+    }
+  ]
 }
