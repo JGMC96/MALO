@@ -348,6 +348,22 @@
       .mensaje { padding-bottom: 104px; }
       .panel { left: 18px; right: 18px; width: auto; }
     }
+
+    /* Pantallas bajas (móvil apaisado, ventanas pequeñas): las bandas se
+       comprimen para que la página entre sin desplazamiento. */
+    @media (max-height: 600px) {
+      .cabecera { padding: 12px var(--margen); }
+      .logo { width: min(30vw, 200px); }
+      .lamina { min-height: 140px; }
+      .mensaje { padding: 12px var(--margen) 16px; margin-top: 8px; }
+      .mensaje h1 { font-size: clamp(1.5rem, 3.4vw, 2.1rem); }
+      .mensaje .sigue { font-size: clamp(0.85rem, 1.6vw, 1rem); margin-top: 0.4em; }
+    }
+
+    @media (max-height: 600px) and (max-width: 620px) {
+      .logo { width: min(64vw, 210px); }
+      .mensaje { padding-bottom: 78px; }
+    }
   </style>
 </head>
 <body>
