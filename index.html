@@ -43,7 +43,9 @@
     :root {
       --papel: #ffffff;
       --tinta: #111111;
-      --gris: #8a8a86;
+      /* Grafito: el gris del texto pequeño (legible AA). El gris claro de
+         marca, #8a8a86, queda solo para masas gráficas grandes. */
+      --grafito: #6f6f6b;
       --filete: rgba(17, 17, 17, 0.14);
       --filete-fuerte: rgba(17, 17, 17, 0.28);
       --tinta-texto: #f2f2f0;
@@ -134,7 +136,7 @@
       font-family: var(--serif);
       font-style: italic;
       font-size: clamp(1rem, 1.7vw, 1.3rem);
-      color: var(--gris);
+      color: var(--grafito);
     }
 
     /* ---- Contacto: botón fijo abajo a la derecha y su panel ---- */
@@ -227,7 +229,7 @@
       margin-left: auto;
       border: 0;
       background: none;
-      color: var(--gris);
+      color: var(--grafito);
       font-family: var(--sans);
       font-size: 20px;
       line-height: 1;
@@ -252,7 +254,7 @@
       font-size: 10px;
       letter-spacing: 0.24em;
       text-transform: uppercase;
-      color: var(--gris);
+      color: var(--grafito);
     }
 
     .campo input,
@@ -311,7 +313,7 @@
       font-family: var(--serif);
       font-style: italic;
       font-size: 1rem;
-      color: var(--gris);
+      color: var(--grafito);
     }
 
     /* Entrada serena; el dibujo ya se traza solo. */
