@@ -1,18 +1,21 @@
 # MALO Architects
 
-Web del estudio. Ahora mismo es una sola página en construcción —
-`index.html` — con el logo, el contacto y, de fondo, la animación de la obra
-dibujándose que se describe más abajo, con la valla del estudio en escena
-(la rotula el propio logo, vía la opción `logo` del montaje). La marca vive
-en `assets/` (logo, iconos, imagen para compartir y la Bodoni Moda
-autoalojada).
+Web del estudio: **https://www.malo.works** — se sirve en Vercel desde
+`public/` (portada a vídeo, con `api/contact.js` para el formulario y la
+redirección del dominio raíz en `vercel.json`).
+
+La marca vive en `assets/` (logo, iconos, imagen para compartir y la
+Bodoni Moda autoalojada), y la animación de la obra dibujándose —con la
+valla del estudio en escena— se describe más abajo. Una portada anterior
+hecha con esa animación quedó en el historial (hasta el commit 21664e6,
+`index.html`).
 
 ## Publicar
 
-`.github/workflows/pages.yml` despliega la web en GitHub Pages con cada push
-a la rama por defecto. **Hay que activar Pages una vez** en el repositorio:
-Settings → Pages → Build and deployment → Source: **GitHub Actions**. A
-partir de ahí queda en `https://jgmc96.github.io/MALO/`.
+La web se despliega en Vercel con cada push. GitHub Pages
+(`.github/workflows/pages.yml`) ya solo publica una redirección de
+`https://jgmc96.github.io/MALO/` hacia malo.works, también para rutas
+profundas vía `404.html`.
 
 ---
 
